@@ -29,7 +29,9 @@ contract Game is VRFConsumerBaseV2 {
     }
 
     enum GameTypes {
-        BlackOrRed
+        BlackOrRed,
+        Suit,
+        Card
     }
 
     /* VRF variables */
@@ -111,8 +113,27 @@ contract Game is VRFConsumerBaseV2 {
         uint256 requestId,
         uint256[] memory randomWords
     ) internal override {
+        // Why does solidity 0.8.7 have no switch statement?
         if (s_requests[requestId].gameType == GameTypes.BlackOrRed) {
-            BlackOrRed(
+            blackOrRed(
+                randomWords,
+                s_requests[requestId].player,
+                s_requests[requestId].index_chosen,
+                s_requests[requestId].player_guess,
+                s_requests[requestId].bet_amount
+            );
+        }
+        if (s_requests[requestId].gameType == GameTypes.Suit) {
+            suit(
+                randomWords,
+                s_requests[requestId].player,
+                s_requests[requestId].index_chosen,
+                s_requests[requestId].player_guess,
+                s_requests[requestId].bet_amount
+            );
+        }
+        if (s_requests[requestId].gameType == GameTypes.Card) {
+            card(
                 randomWords,
                 s_requests[requestId].player,
                 s_requests[requestId].index_chosen,
@@ -122,13 +143,9 @@ contract Game is VRFConsumerBaseV2 {
         }
     }
 
-    function BlackOrRed(
-        uint256[] memory random_words,
-        address player,
-        uint8 index_chosen,
-        uint8 player_guess,
-        uint256 bet_amount
-    ) internal {
+    function shuffleDeck(
+        uint256[] memory random_words
+    ) internal pure returns (uint8[52] memory) {
         uint8[52] memory unshuffled;
         uint8[52] memory deck;
 
@@ -143,6 +160,17 @@ contract Game is VRFConsumerBaseV2 {
             deck[i] = unshuffled[cardIndex];
             unshuffled[cardIndex] = unshuffled[52 - i - 1];
         }
+        return deck;
+    }
+
+    function blackOrRed(
+        uint256[] memory random_words,
+        address player,
+        uint8 index_chosen,
+        uint8 player_guess,
+        uint256 bet_amount
+    ) internal {
+        uint8[52] memory deck = shuffleDeck(random_words);
 
         if (isRed(deck[index_chosen]) == isRed(player_guess)) {
             (bool success, ) = player.call{value: bet_amount * 2}("");
@@ -152,8 +180,55 @@ contract Game is VRFConsumerBaseV2 {
         }
     }
 
+    function suit(
+        uint256[] memory random_words,
+        address player,
+        uint8 index_chosen,
+        uint8 player_guess,
+        uint256 bet_amount
+    ) internal {
+        uint8[52] memory deck = shuffleDeck(random_words);
+
+        if (getSuit(deck[index_chosen]) == getSuit(player_guess)) {
+            (bool success, ) = player.call{value: bet_amount * 4}("");
+            if (!success) {
+                revert Game__Transfer_Failed();
+            }
+        }
+    }
+
+    function card(
+        uint256[] memory random_words,
+        address player,
+        uint8 index_chosen,
+        uint8 player_guess,
+        uint256 bet_amount
+    ) internal {
+        uint8[52] memory deck = shuffleDeck(random_words);
+
+        if (deck[index_chosen] == player_guess) {
+            (bool success, ) = player.call{value: bet_amount * 52}("");
+            if (!success) {
+                revert Game__Transfer_Failed();
+            }
+        }
+    }
+
     /* private functions */
     function isRed(uint8 card) private pure returns (bool) {
         return (card <= 12 || (card >= 26 && card <= 38));
+    }
+
+    function getSuit(uint8 card) private pure returns (uint8) {
+        if (card <= 12) {
+            return 0;
+        }
+        if (card <= 25) {
+            return 1;
+        }
+        if (card <= 38) {
+            return 2;
+        }
+        return 3;
     }
 }
