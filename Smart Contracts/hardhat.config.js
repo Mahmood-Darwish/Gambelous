@@ -8,8 +8,6 @@ require("dotenv").config()
 
 const MAINNET_RPC_URL = "https://eth-mainnet.alchemyapi.io/v2/your-api-key"
 const GOERLI_RPC_URL = "https://eth-goerli.alchemyapi.io/v2/your-api-key"
-const POLYGON_MAINNET_RPC_URL =
-    "https://polygon-mainnet.alchemyapi.io/v2/your-api-key"
 const PRIVATE_KEY = ""
 const ETHERSCAN_API_KEY = "Your etherscan API key"
 const REPORT_GAS = false
