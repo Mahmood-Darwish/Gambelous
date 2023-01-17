@@ -16,7 +16,7 @@ error Game__VRF_RequestId_Not_Found();
 /**@title A simple card game contract
  * @author Mahmood Darwish
  * @dev This implements the Chainlink VRF Version 2
- * @notice Card mapping is 0-12 is Hearts (starting with 2 and ending with ace) 13-25 is Spades, 26-38 is Dimonds, 39-51 is Clubs
+ * @notice Card mapping is as follows, 0-12 is Hearts (starting with 2 and ending with ace) 13-25 is Spades, 26-38 is Dimonds, and 39-51 is Clubs
  */
 contract Game is VRFConsumerBaseV2 {
     /* type declarations */
@@ -34,7 +34,8 @@ contract Game is VRFConsumerBaseV2 {
         Card
     }
 
-    /* VRF variables */
+    /* state variables */
+    // VRF variables
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     uint64 private immutable i_subscriptionId;
     bytes32 private immutable i_gasLane;
@@ -42,7 +43,7 @@ contract Game is VRFConsumerBaseV2 {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 52;
 
-    /* contract veriables */
+    // contract veriables
     address private immutable i_owner;
     uint256 public constant MINIMUM_BET = 1000000000000000;
     mapping(uint256 => GameRequest) private s_requests;
@@ -220,6 +221,7 @@ contract Game is VRFConsumerBaseV2 {
     }
 
     function getSuit(uint8 card) private pure returns (uint8) {
+        // Again, why does solidity 0.8.7 have no switch statement?
         if (card <= 12) {
             return 0;
         }

@@ -6,10 +6,8 @@ require("hardhat-gas-reporter")
 require("hardhat-contract-sizer")
 require("dotenv").config()
 
-const MAINNET_RPC_URL =
-    "https://eth-mainnet.alchemyapi.io/v2/your-api-key"
-const GOERLI_RPC_URL =
-    "https://eth-goerli.alchemyapi.io/v2/your-api-key"
+const MAINNET_RPC_URL = "https://eth-mainnet.alchemyapi.io/v2/your-api-key"
+const GOERLI_RPC_URL = "https://eth-goerli.alchemyapi.io/v2/your-api-key"
 const POLYGON_MAINNET_RPC_URL =
     "https://polygon-mainnet.alchemyapi.io/v2/your-api-key"
 const PRIVATE_KEY = ""
@@ -21,9 +19,11 @@ module.exports = {
     networks: {
         hardhat: {
             chainId: 31337,
+            blockConfirmations: 1,
         },
         localhost: {
             chainId: 31337,
+            blockConfirmations: 1,
         },
         /*goerli: {
             url: GOERLI_RPC_URL,
@@ -33,6 +33,7 @@ module.exports = {
                     : [],
             saveDeployments: true,
             chainId: 5,
+            blockConfirmations: 6
         },
         mainnet: {
             url: MAINNET_RPC_URL,
@@ -42,6 +43,7 @@ module.exports = {
                     : [],
             saveDeployments: true,
             chainId: 1,
+            blockConfirmations: 6
         },*/
     },
     etherscan: {
@@ -55,8 +57,7 @@ module.exports = {
                 chainId: 5,
                 urls: {
                     apiURL: "https://api-goerli.etherscan.io/api",
-                    browserURL:
-                        "https://goerli.etherscan.io",
+                    browserURL: "https://goerli.etherscan.io",
                 },
             },
         ],
@@ -70,7 +71,7 @@ module.exports = {
     },
     contractSizer: {
         runOnCompile: false,
-        only: ["Raffle"],
+        only: ["Game"],
     },
     namedAccounts: {
         deployer: {
