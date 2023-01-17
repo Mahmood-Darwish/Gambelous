@@ -109,6 +109,22 @@ contract Game is VRFConsumerBaseV2 {
         }
     }
 
+    function getOwner() external view returns (address) {
+        return i_owner;
+    }
+
+    function getGasLane() external view returns (bytes32) {
+        return i_gasLane;
+    }
+
+    function getCallbackGasLimit() external view returns (uint32) {
+        return i_callbackGasLimit;
+    }
+
+    function getSubscriptionId() external view returns (uint64) {
+        return i_subscriptionId;
+    }
+
     /* internal functions */
     function fulfillRandomWords(
         uint256 requestId,
