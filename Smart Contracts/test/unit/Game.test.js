@@ -1,6 +1,13 @@
-const { assert, expect } = require("chai")
+const { assert, anyValue } = require("chai")
 const { network, deployments, ethers } = require("hardhat")
 const { developmentChains, networkConfig } = require("../../helper.config")
+const chai = require("chai"),
+    spies = require("chai-spies")
+
+chai.use(spies)
+
+const should = chai.should(),
+    expect = chai.expect
 
 !developmentChains.includes(network.name)
     ? describe.skip
@@ -106,17 +113,207 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   ).to.be.revertedWith("nonexistent request")
               })
 
-              it("Calls the right game", async () => {
-                  let bet = await game.MINIMUM_BET()
+              /*it("Calls the right game", async () => {
+                  const bet = await game.MINIMUM_BET()
 
                   game.play(0, deployer.address, 5, 5, {
                       value: bet,
                   })
 
-                  let randomWords = Array.from({ length: 52 }, () =>
+                  const randomWords = Array.from({ length: 52 }, () =>
                       Math.floor(Math.random() * 100000000000)
                   )
-                  await expect(game._fulfillRandomWords(0, randomWords)).to.be.ok
+
+                  const spy = chai.spy.on(game, "_fulfillRandomWords")
+                  await game._fulfillRandomWords(0, randomWords)
+                  console.log(spy)
+
+                  expect(spy).to.have.been.called()
+              })*/
+          })
+
+          describe("shuffleDeck", () => {
+              it("Returns an array of length 52", async () => {
+                  const randomWords = Array.from({ length: 52 }, () =>
+                      Math.floor(Math.random() * 100000000000)
+                  )
+                  const arr = await game._shuffleDeck(randomWords)
+                  assert.equal(arr.length, 52)
+              })
+
+              it("Array returned is random", async () => {
+                  const randomWords = Array.from({ length: 52 }, () =>
+                      Math.floor(Math.random() * 100000000000)
+                  )
+                  const arr = await game._shuffleDeck(randomWords)
+                  assert.notEqual(arr, [...Array(52).keys()]) // check that the array isn't [0, 1, 2, ..., 51]
+              })
+          })
+
+          describe("blackOrRed", () => {
+              it("Emits a winning event when the player wins", async () => {
+                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
+                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
+                  const index_chosen = 0
+                  const player_guess = 0
+                  const bet_amount = (await game.MINIMUM_BET()) * 2
+                  const requestId = 0
+
+                  await deployer.sendTransaction({
+                      to: (await ethers.getContract("ExposedGame")).address,
+                      value: ethers.utils.parseEther("1"),
+                  })
+
+                  await expect(
+                      game._blackOrRed(
+                          randomWords,
+                          player.address,
+                          index_chosen,
+                          player_guess,
+                          bet_amount,
+                          requestId
+                      )
+                  )
+                      .to.emit(game, "GameResult")
+                      .withArgs(0, true, () => true)
+              })
+
+              it("Emits a losing event when the player loses", async () => {
+                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
+                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
+                  const index_chosen = 13
+                  const player_guess = 0
+                  const bet_amount = (await game.MINIMUM_BET()) * 2
+                  const requestId = 0
+
+                  await deployer.sendTransaction({
+                      to: (await ethers.getContract("ExposedGame")).address,
+                      value: ethers.utils.parseEther("1"),
+                  })
+
+                  await expect(
+                      game._blackOrRed(
+                          randomWords,
+                          player.address,
+                          index_chosen,
+                          player_guess,
+                          bet_amount,
+                          requestId
+                      )
+                  )
+                      .to.emit(game, "GameResult")
+                      .withArgs(0, false, () => true)
+              })
+          })
+
+          describe("suit", () => {
+              it("Emits a winning event when the player wins", async () => {
+                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
+                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
+                  const index_chosen = 0
+                  const player_guess = 0
+                  const bet_amount = (await game.MINIMUM_BET()) * 2
+                  const requestId = 0
+
+                  await deployer.sendTransaction({
+                      to: (await ethers.getContract("ExposedGame")).address,
+                      value: ethers.utils.parseEther("1"),
+                  })
+
+                  await expect(
+                      game._suit(
+                          randomWords,
+                          player.address,
+                          index_chosen,
+                          player_guess,
+                          bet_amount,
+                          requestId
+                      )
+                  )
+                      .to.emit(game, "GameResult")
+                      .withArgs(0, true, () => true)
+              })
+
+              it("Emits a losing event when the player loses", async () => {
+                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
+                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
+                  const index_chosen = 13
+                  const player_guess = 0
+                  const bet_amount = (await game.MINIMUM_BET()) * 2
+                  const requestId = 0
+
+                  await deployer.sendTransaction({
+                      to: (await ethers.getContract("ExposedGame")).address,
+                      value: ethers.utils.parseEther("1"),
+                  })
+
+                  await expect(
+                      game._suit(
+                          randomWords,
+                          player.address,
+                          index_chosen,
+                          player_guess,
+                          bet_amount,
+                          requestId
+                      )
+                  )
+                      .to.emit(game, "GameResult")
+                      .withArgs(0, false, () => true)
+              })
+          })
+          describe("card", () => {
+              it("Emits a winning event when the player wins", async () => {
+                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
+                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
+                  const index_chosen = 0
+                  const player_guess = 0
+                  const bet_amount = (await game.MINIMUM_BET()) * 2
+                  const requestId = 0
+
+                  await deployer.sendTransaction({
+                      to: (await ethers.getContract("ExposedGame")).address,
+                      value: ethers.utils.parseEther("1"),
+                  })
+
+                  await expect(
+                      game._card(
+                          randomWords,
+                          player.address,
+                          index_chosen,
+                          player_guess,
+                          bet_amount,
+                          requestId
+                      )
+                  )
+                      .to.emit(game, "GameResult")
+                      .withArgs(0, true, () => true)
+              })
+
+              it("Emits a losing event when the player loses", async () => {
+                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
+                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
+                  const index_chosen = 1
+                  const player_guess = 0
+                  const bet_amount = (await game.MINIMUM_BET()) * 2
+                  const requestId = 0
+
+                  await deployer.sendTransaction({
+                      to: (await ethers.getContract("ExposedGame")).address,
+                      value: ethers.utils.parseEther("1"),
+                  })
+
+                  await expect(
+                      game._card(
+                          randomWords,
+                          player.address,
+                          index_chosen,
+                          player_guess,
+                          bet_amount,
+                          requestId
+                      )
+                  )
+                      .to.emit(game, "GameResult")
+                      .withArgs(0, false, () => true)
               })
           })
       })

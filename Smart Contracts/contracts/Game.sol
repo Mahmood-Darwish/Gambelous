@@ -48,6 +48,9 @@ contract Game is VRFConsumerBaseV2 {
     uint256 public constant MINIMUM_BET = 1000000000000000;
     mapping(uint256 => GameRequest) private s_requests;
 
+    /* events */
+    event GameResult(uint256 indexed requestId, bool result, uint8[52] deck);
+
     /* modifiers */
     modifier onwerOnly() {
         if (msg.sender != i_owner) {
@@ -77,7 +80,7 @@ contract Game is VRFConsumerBaseV2 {
         address player,
         uint8 index_chosen,
         uint8 player_guess
-    ) external payable {
+    ) external payable returns (uint256) {
         if (msg.value <= MINIMUM_BET) {
             revert Game__Not_Enough_ETH();
         }
@@ -97,6 +100,8 @@ contract Game is VRFConsumerBaseV2 {
             player_guess: player_guess,
             bet_amount: msg.value
         });
+
+        return requestId;
     }
 
     function withdraw(uint256 value) external onwerOnly {
@@ -137,7 +142,8 @@ contract Game is VRFConsumerBaseV2 {
                 s_requests[requestId].player,
                 s_requests[requestId].index_chosen,
                 s_requests[requestId].player_guess,
-                s_requests[requestId].bet_amount
+                s_requests[requestId].bet_amount,
+                requestId
             );
         }
         if (s_requests[requestId].gameType == GameTypes.Suit) {
@@ -146,7 +152,8 @@ contract Game is VRFConsumerBaseV2 {
                 s_requests[requestId].player,
                 s_requests[requestId].index_chosen,
                 s_requests[requestId].player_guess,
-                s_requests[requestId].bet_amount
+                s_requests[requestId].bet_amount,
+                requestId
             );
         }
         if (s_requests[requestId].gameType == GameTypes.Card) {
@@ -155,7 +162,8 @@ contract Game is VRFConsumerBaseV2 {
                 s_requests[requestId].player,
                 s_requests[requestId].index_chosen,
                 s_requests[requestId].player_guess,
-                s_requests[requestId].bet_amount
+                s_requests[requestId].bet_amount,
+                requestId
             );
         }
         delete s_requests[requestId];
@@ -186,16 +194,20 @@ contract Game is VRFConsumerBaseV2 {
         address player,
         uint8 index_chosen,
         uint8 player_guess,
-        uint256 bet_amount
+        uint256 bet_amount,
+        uint256 requestId
     ) internal {
         uint8[52] memory deck = shuffleDeck(random_words);
+        bool result = false;
 
         if (isRed(deck[index_chosen]) == isRed(player_guess)) {
+            result = true;
             (bool success, ) = player.call{value: bet_amount * 2}("");
             if (!success) {
                 revert Game__Transfer_Failed();
             }
         }
+        emit GameResult(requestId, result, deck);
     }
 
     function suit(
@@ -203,16 +215,20 @@ contract Game is VRFConsumerBaseV2 {
         address player,
         uint8 index_chosen,
         uint8 player_guess,
-        uint256 bet_amount
+        uint256 bet_amount,
+        uint256 requestId
     ) internal {
         uint8[52] memory deck = shuffleDeck(random_words);
+        bool result = false;
 
         if (getSuit(deck[index_chosen]) == getSuit(player_guess)) {
+            result = true;
             (bool success, ) = player.call{value: bet_amount * 4}("");
             if (!success) {
                 revert Game__Transfer_Failed();
             }
         }
+        emit GameResult(requestId, result, deck);
     }
 
     function card(
@@ -220,16 +236,20 @@ contract Game is VRFConsumerBaseV2 {
         address player,
         uint8 index_chosen,
         uint8 player_guess,
-        uint256 bet_amount
+        uint256 bet_amount,
+        uint256 requestId
     ) internal {
         uint8[52] memory deck = shuffleDeck(random_words);
+        bool result = false;
 
         if (deck[index_chosen] == player_guess) {
+            result = true;
             (bool success, ) = player.call{value: bet_amount * 52}("");
             if (!success) {
                 revert Game__Transfer_Failed();
             }
         }
+        emit GameResult(requestId, result, deck);
     }
 
     /* private functions */

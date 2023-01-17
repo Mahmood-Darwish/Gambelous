@@ -36,14 +36,16 @@ contract ExposedGame is Game {
         address player,
         uint8 index_chosen,
         uint8 player_guess,
-        uint256 bet_amount
+        uint256 bet_amount,
+        uint256 requestId
     ) public {
         blackOrRed(
             random_words,
             player,
             index_chosen,
             player_guess,
-            bet_amount
+            bet_amount,
+            requestId
         );
     }
 
@@ -52,9 +54,17 @@ contract ExposedGame is Game {
         address player,
         uint8 index_chosen,
         uint8 player_guess,
-        uint256 bet_amount
+        uint256 bet_amount,
+        uint256 requestId
     ) public {
-        suit(random_words, player, index_chosen, player_guess, bet_amount);
+        suit(
+            random_words,
+            player,
+            index_chosen,
+            player_guess,
+            bet_amount,
+            requestId
+        );
     }
 
     function _card(
@@ -62,8 +72,16 @@ contract ExposedGame is Game {
         address player,
         uint8 index_chosen,
         uint8 player_guess,
-        uint256 bet_amount
+        uint256 bet_amount,
+        uint256 requestId
     ) public {
-        card(random_words, player, index_chosen, player_guess, bet_amount);
+        card(
+            random_words,
+            player,
+            index_chosen,
+            player_guess,
+            bet_amount,
+            requestId
+        );
     }
 }

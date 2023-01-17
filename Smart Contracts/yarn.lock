@@ -1654,6 +1654,7 @@
   integrity sha512-1wTv+20lNiC0R07jyIAbHU7TNHKRwGiTGRfiNnA8jOWjKT98g5OgLpYWOi40Vgpk8SPLA9EvfJAbAeIyVn+7Bw==
 
 "@openzeppelin/contracts-v0.7@npm:@openzeppelin/contracts@v3.4.2", "@openzeppelin/contracts@^3.3.0", "@openzeppelin/contracts@^3.4.0":
+  name "@openzeppelin/contracts-v0.7"
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-3.4.2.tgz#d81f786fda2871d1eb8a8c5a73e455753ba53527"
   integrity sha512-z0zMCjyhhp4y7XKAcDAi3Vgms4T2PstwBdahiO0+9NaGICQKjynK3wduSRplTgk4LXmoO1yfDGO5RbjKYxtuxA==
@@ -3805,6 +3806,11 @@ chai-bignumber@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/chai-bignumber/-/chai-bignumber-3.1.0.tgz#e196456c760df21f0e124f6df922289ea15a7e4c"
   integrity sha512-omxEc80jAU+pZwRmoWr3aEzeLad4JW3iBhLRQlgISvghBdIxrMT7mVAGsDz4WSyCkKowENshH2j9OABAhld7QQ==
+
+chai-spies@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/chai-spies/-/chai-spies-1.0.0.tgz#d16b39336fb316d03abf8c375feb23c0c8bb163d"
+  integrity sha512-elF2ZUczBsFoP07qCfMO/zeggs8pqCf3fZGyK5+2X4AndS8jycZYID91ztD9oQ7d/0tnS963dPkd0frQEThDsg==
 
 chai@^4.0.1, chai@^4.2.0, chai@^4.3.4:
   version "4.3.7"
