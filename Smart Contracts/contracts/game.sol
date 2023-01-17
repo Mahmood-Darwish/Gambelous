@@ -142,6 +142,7 @@ contract Game is VRFConsumerBaseV2 {
                 s_requests[requestId].bet_amount
             );
         }
+        delete s_requests[requestId];
     }
 
     function shuffleDeck(
