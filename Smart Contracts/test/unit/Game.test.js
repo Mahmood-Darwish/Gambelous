@@ -54,7 +54,7 @@ const should = chai.should(),
           })
 
           describe("Withdraw", () => {
-              it("Only owner can withdarw", async () => {
+              it("Can be withdrawn by owner only", async () => {
                   const playerGame = game.connect(player)
                   await expect(
                       playerGame.withdraw(ethers.utils.parseEther("0.25"))
@@ -71,13 +71,18 @@ const should = chai.should(),
                   ).to.be.revertedWith("Game__Not_Enough_Balance")
               })
 
-              it("Owner can withdraw ether", async () => {
+              it("Allows owner to withdraw ether", async () => {
                   const transactionHash = await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
                       value: ethers.utils.parseEther("0.1"),
                   })
-                  expect(await game.withdraw(ethers.utils.parseEther("0.05")))
-                      .to.be.ok
+                  await expect(game.withdraw(ethers.utils.parseEther("0.05")))
+                      .to.not.be.reverted
+
+                  assert.equal(
+                      (await game.provider.getBalance(game.address)).toString(),
+                      ethers.utils.parseEther("0.05")
+                  )
               })
           })
 
@@ -85,7 +90,6 @@ const should = chai.should(),
               it("Can't play with less than minimum amount", async () => {
                   let bet = await game.MINIMUM_BET()
                   bet /= 2
-
                   await expect(
                       game.play(0, deployer.address, 5, 5, {
                           value: bet,
@@ -99,10 +103,10 @@ const should = chai.should(),
                       game.play(0, deployer.address, 5, 5, {
                           value: bet,
                       })
-                  ).to.be.ok
+                  ).to.not.be.reverted
               })
 
-              /*it("A game result is emitted", async () => {
+              it("Emits A game result", async () => {
                   await new Promise(async (resolve, reject) => {
                       game.once("GameResult", () => {
                           try {
@@ -115,14 +119,12 @@ const should = chai.should(),
                       await game.play(0, deployer.address, 5, 5, {
                           value: bet,
                       })
-                      console.log(bet)
                       await VRFCoordinatorV2Mock.fulfillRandomWords(
-                          0,
+                          1,
                           game.address
                       )
-                      console.log(bet)
                   })
-              })*/
+              })
           })
 
           describe("fulfillRandomWords", () => {
@@ -163,7 +165,7 @@ const should = chai.should(),
                   assert.equal(arr.length, 52)
               })
 
-              it("Array returned is random", async () => {
+              it("Returns a random array", async () => {
                   const randomWords = Array.from({ length: 52 }, () =>
                       Math.floor(Math.random() * 100000000000)
                   )

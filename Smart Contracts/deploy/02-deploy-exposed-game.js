@@ -45,6 +45,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
             log: true,
             waitConfirmations: waitConfirmations,
         })
+        await VRFCoordinatorV2Mock.addConsumer(subscriptionId.toNumber(), game.address)
         console.log('"ExposedGame" contract deployed!')
         console.log("----------------------------------------")
     }

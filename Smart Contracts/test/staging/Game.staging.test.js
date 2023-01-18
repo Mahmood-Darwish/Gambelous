@@ -23,18 +23,15 @@ developmentChains.includes(network.name)
                   await new Promise(async (resolve, reject) => {
                       game.once("GameResult", () => {
                           try {
-
                               resolve()
                           } catch (e) {
                               reject(e)
                           }
                       })
                       let bet = await game.MINIMUM_BET()
-                      console.log(bet)
                       await game.play(0, deployer.address, 5, 5, {
                           value: bet,
                       })
-                      console.log(bet)
                   })
               })
           })

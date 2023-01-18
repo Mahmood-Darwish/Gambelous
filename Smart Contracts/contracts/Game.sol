@@ -81,7 +81,7 @@ contract Game is VRFConsumerBaseV2 {
         uint8 index_chosen,
         uint8 player_guess
     ) external payable returns (uint256) {
-        if (msg.value <= MINIMUM_BET) {
+        if (msg.value < MINIMUM_BET) {
             revert Game__Not_Enough_ETH();
         }
 
