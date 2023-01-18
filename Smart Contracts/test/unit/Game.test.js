@@ -101,6 +101,28 @@ const should = chai.should(),
                       })
                   ).to.be.ok
               })
+
+              /*it("A game result is emitted", async () => {
+                  await new Promise(async (resolve, reject) => {
+                      game.once("GameResult", () => {
+                          try {
+                              resolve()
+                          } catch (e) {
+                              reject(e)
+                          }
+                      })
+                      let bet = await game.MINIMUM_BET()
+                      await game.play(0, deployer.address, 5, 5, {
+                          value: bet,
+                      })
+                      console.log(bet)
+                      await VRFCoordinatorV2Mock.fulfillRandomWords(
+                          0,
+                          game.address
+                      )
+                      console.log(bet)
+                  })
+              })*/
           })
 
           describe("fulfillRandomWords", () => {

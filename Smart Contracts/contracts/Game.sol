@@ -45,7 +45,7 @@ contract Game is VRFConsumerBaseV2 {
 
     // contract veriables
     address private immutable i_owner;
-    uint256 public constant MINIMUM_BET = 1000000000000000;
+    uint256 public constant MINIMUM_BET = 1000000000000000; // 0.001 ETH
     mapping(uint256 => GameRequest) private s_requests;
 
     /* events */
