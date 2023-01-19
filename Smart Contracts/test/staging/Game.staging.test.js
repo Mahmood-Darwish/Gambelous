@@ -19,9 +19,9 @@ developmentChains.includes(network.name)
           })
 
           describe("play", () => {
-              it("A game result is emitted", async () => {
+              it("Emits A game result", async () => {
                   await new Promise(async (resolve, reject) => {
-                      game.once("GameResult", () => {
+                      game.once("GameResult", (requestId, result, deck) => {
                           try {
                               resolve()
                           } catch (e) {

@@ -1,6 +1,7 @@
-const { assert, anyValue } = require("chai")
+const { assert } = require("chai")
 const { network, deployments, ethers } = require("hardhat")
 const { developmentChains, networkConfig } = require("../../helper.config")
+
 const chai = require("chai"),
     spies = require("chai-spies")
 
@@ -13,6 +14,20 @@ const should = chai.should(),
     ? describe.skip
     : describe("Game unit tests", () => {
           let game, VRFCoordinatorV2Mock, chainId, player, deployer
+          /*
+            The seeds cause the following shuffle:
+            [
+                23,  2, 20, 41,  9, 11, 36, 34, 37, 26, 42,
+                39, 16, 17,  7, 28, 46, 15,  3, 47, 19,  1,
+                35, 22, 32, 51, 43, 48,  0, 12, 38, 14, 29,
+                5, 31, 33, 21, 50, 25, 24, 10, 45,  4, 40,
+                27,  6, 13, 18, 30,  8, 49, 44
+            ]
+          */
+          const seeds = [
+              35053992357293870730714867426566905148978928452753502468510870549180240652415n,
+              65435487694026400608138574424648548168885109637056472451333937866018550034503n,
+          ]
 
           beforeEach(async () => {
               const accounts = await ethers.getSigners()
@@ -86,6 +101,14 @@ const should = chai.should(),
               })
           })
 
+          describe("GenerateNumbers", async () => {
+              it("Returns a random array", async () => {
+                  const sortedArray = [...Array(52).keys()] // [0, 1, 2, ..., 51]
+                  const randomWords = await game._generateNumbers(seeds)
+                  assert.notEqual(sortedArray, randomWords)
+              })
+          })
+
           describe("Play", () => {
               it("Can't play with less than minimum amount", async () => {
                   let bet = await game.MINIMUM_BET()
@@ -108,8 +131,9 @@ const should = chai.should(),
 
               it("Emits A game result", async () => {
                   await new Promise(async (resolve, reject) => {
-                      game.once("GameResult", () => {
+                      game.once("GameResult", (requestId, result, deck) => {
                           try {
+                              assert.equal(requestId.toString(), "1")
                               resolve()
                           } catch (e) {
                               reject(e)
@@ -125,6 +149,17 @@ const should = chai.should(),
                       )
                   })
               })
+
+              /*it("Calls the right game", async () => {
+                  const bet = await game.MINIMUM_BET()
+                  const spy = await chai.spy.on(game, "blackOrRed")
+
+                  await game.play(0, deployer.address, 5, 5, {
+                      value: bet,
+                  })
+
+                  expect(spy).to.have.been.called()
+              })*/
           })
 
           describe("fulfillRandomWords", () => {
@@ -136,49 +171,33 @@ const should = chai.should(),
                       VRFCoordinatorV2Mock.fulfillRandomWords(1, game.address)
                   ).to.be.revertedWith("nonexistent request")
               })
-
-              /*it("Calls the right game", async () => {
-                  const bet = await game.MINIMUM_BET()
-
-                  game.play(0, deployer.address, 5, 5, {
-                      value: bet,
-                  })
-
-                  const randomWords = Array.from({ length: 52 }, () =>
-                      Math.floor(Math.random() * 100000000000)
-                  )
-
-                  const spy = chai.spy.on(game, "_fulfillRandomWords")
-                  await game._fulfillRandomWords(0, randomWords)
-                  console.log(spy)
-
-                  expect(spy).to.have.been.called()
-              })*/
           })
 
           describe("shuffleDeck", () => {
               it("Returns an array of length 52", async () => {
-                  const randomWords = Array.from({ length: 52 }, () =>
-                      Math.floor(Math.random() * 100000000000)
-                  )
-                  const arr = await game._shuffleDeck(randomWords)
+                  const arr = await game._shuffleDeck(seeds)
                   assert.equal(arr.length, 52)
               })
 
               it("Returns a random array", async () => {
-                  const randomWords = Array.from({ length: 52 }, () =>
-                      Math.floor(Math.random() * 100000000000)
-                  )
-                  const arr = await game._shuffleDeck(randomWords)
+                  const arr = await game._shuffleDeck(seeds)
                   assert.notEqual(arr, [...Array(52).keys()]) // check that the array isn't [0, 1, 2, ..., 51]
+              })
+
+              it("Returns a premutation from 0 to 51", async () => {
+                  let arr = await game._shuffleDeck(seeds)
+                  let arrToSort = [...arr]
+                  arrToSort.sort((a, b) => {
+                      return a - b
+                  })
+                  arr = arrToSort
+                  assert.deepEqual(arr, [...Array(52).keys()]) // check that the sorted array is [0, 1, 2, ..., 51]
               })
           })
 
           describe("blackOrRed", () => {
               it("Emits a winning event when the player wins", async () => {
-                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
-                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
-                  const index_chosen = 0
+                  const index_chosen = 1
                   const player_guess = 0
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
@@ -190,7 +209,7 @@ const should = chai.should(),
 
                   await expect(
                       game._blackOrRed(
-                          randomWords,
+                          seeds,
                           player.address,
                           index_chosen,
                           player_guess,
@@ -203,9 +222,7 @@ const should = chai.should(),
               })
 
               it("Emits a losing event when the player loses", async () => {
-                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
-                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
-                  const index_chosen = 13
+                  const index_chosen = 0
                   const player_guess = 0
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
@@ -217,7 +234,7 @@ const should = chai.should(),
 
                   await expect(
                       game._blackOrRed(
-                          randomWords,
+                          seeds,
                           player.address,
                           index_chosen,
                           player_guess,
@@ -232,10 +249,8 @@ const should = chai.should(),
 
           describe("suit", () => {
               it("Emits a winning event when the player wins", async () => {
-                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
-                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
                   const index_chosen = 0
-                  const player_guess = 0
+                  const player_guess = 13
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
 
@@ -246,7 +261,7 @@ const should = chai.should(),
 
                   await expect(
                       game._suit(
-                          randomWords,
+                          seeds,
                           player.address,
                           index_chosen,
                           player_guess,
@@ -259,10 +274,8 @@ const should = chai.should(),
               })
 
               it("Emits a losing event when the player loses", async () => {
-                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
-                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
-                  const index_chosen = 13
-                  const player_guess = 0
+                  const index_chosen = 1
+                  const player_guess = 13
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
 
@@ -273,7 +286,7 @@ const should = chai.should(),
 
                   await expect(
                       game._suit(
-                          randomWords,
+                          seeds,
                           player.address,
                           index_chosen,
                           player_guess,
@@ -287,10 +300,8 @@ const should = chai.should(),
           })
           describe("card", () => {
               it("Emits a winning event when the player wins", async () => {
-                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
-                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
-                  const index_chosen = 0
-                  const player_guess = 0
+                  const index_chosen = 2
+                  const player_guess = 20
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
 
@@ -301,7 +312,7 @@ const should = chai.should(),
 
                   await expect(
                       game._card(
-                          randomWords,
+                          seeds,
                           player.address,
                           index_chosen,
                           player_guess,
@@ -314,10 +325,8 @@ const should = chai.should(),
               })
 
               it("Emits a losing event when the player loses", async () => {
-                  //console.log(await game._shuffleDeck([...Array(52).keys()]))
-                  const randomWords = [...Array(52).keys()] // forces a certain pattern for the deck
-                  const index_chosen = 1
-                  const player_guess = 0
+                  const index_chosen = 0
+                  const player_guess = 50
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
 
@@ -328,7 +337,7 @@ const should = chai.should(),
 
                   await expect(
                       game._card(
-                          randomWords,
+                          seeds,
                           player.address,
                           index_chosen,
                           player_guess,

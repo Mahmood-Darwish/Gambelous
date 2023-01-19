@@ -5,6 +5,7 @@ pragma solidity ^0.8.7;
 /* imports */
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "hardhat/console.sol";
 
 /* errors */
 error Game__Transfer_Failed();
@@ -41,7 +42,7 @@ contract Game is VRFConsumerBaseV2 {
     bytes32 private immutable i_gasLane;
     uint32 private immutable i_callbackGasLimit;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
-    uint32 private constant NUM_WORDS = 52;
+    uint32 private constant NUM_WORDS = 2;
 
     // contract veriables
     address private immutable i_owner;
@@ -169,9 +170,28 @@ contract Game is VRFConsumerBaseV2 {
         delete s_requests[requestId];
     }
 
-    function shuffleDeck(
-        uint256[] memory random_words
+    function generateNumbers(
+        uint256[] memory seeds
     ) internal pure returns (uint8[52] memory) {
+        uint8[52] memory result;
+        uint8 currentNumToCreate = 0;
+        for (uint8 i = 0; i < seeds.length; i++) {
+            for (uint8 j = 0; j < (256 / 8); j++) {
+                result[currentNumToCreate] = uint8(seeds[i] % 256);
+                seeds[i] /= 256;
+                currentNumToCreate++;
+                if (currentNumToCreate == 52) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    function shuffleDeck(
+        uint256[] memory seeds
+    ) internal pure returns (uint8[52] memory) {
+        uint8[52] memory random_words = generateNumbers(seeds);
         uint8[52] memory unshuffled;
         uint8[52] memory deck;
 

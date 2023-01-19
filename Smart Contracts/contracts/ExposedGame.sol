@@ -25,6 +25,12 @@ contract ExposedGame is Game {
         fulfillRandomWords(requestId, randomWords);
     }
 
+    function _generateNumbers(
+        uint256[] memory seeds
+    ) public pure returns (uint8[52] memory) {
+        return generateNumbers(seeds);
+    }
+
     function _shuffleDeck(
         uint256[] memory random_words
     ) public pure returns (uint8[52] memory) {
