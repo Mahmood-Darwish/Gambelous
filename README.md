@@ -56,6 +56,7 @@ The finished version of this project should have a backend and frontend that wor
 * Update tests to use constants instead of literals everywhere
 * Add natspec documentation
 * Fix name casing everywhere
+* Improve readme.md
 
 ## Contributing
 
