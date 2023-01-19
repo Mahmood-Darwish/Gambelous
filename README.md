@@ -1,6 +1,6 @@
 # Gambling Game
 
-[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=plastic)](./LICENSE)
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=plastic)](./LICENSE.md)
 
 > Ethereum smart contract gambling game.
 
