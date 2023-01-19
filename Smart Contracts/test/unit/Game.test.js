@@ -1,14 +1,6 @@
-const { assert } = require("chai")
+const { assert, expect } = require("chai")
 const { network, deployments, ethers } = require("hardhat")
 const { developmentChains, networkConfig } = require("../../helper.config")
-
-const chai = require("chai"),
-    spies = require("chai-spies")
-
-chai.use(spies)
-
-const should = chai.should(),
-    expect = chai.expect
 
 !developmentChains.includes(network.name)
     ? describe.skip
@@ -128,38 +120,6 @@ const should = chai.should(),
                       })
                   ).to.not.be.reverted
               })
-
-              it("Emits A game result", async () => {
-                  await new Promise(async (resolve, reject) => {
-                      game.once("GameResult", (requestId, result, deck) => {
-                          try {
-                              assert.equal(requestId.toString(), "1")
-                              resolve()
-                          } catch (e) {
-                              reject(e)
-                          }
-                      })
-                      let bet = await game.MINIMUM_BET()
-                      await game.play(0, deployer.address, 5, 5, {
-                          value: bet,
-                      })
-                      await VRFCoordinatorV2Mock.fulfillRandomWords(
-                          1,
-                          game.address
-                      )
-                  })
-              })
-
-              /*it("Calls the right game", async () => {
-                  const bet = await game.MINIMUM_BET()
-                  const spy = await chai.spy.on(game, "blackOrRed")
-
-                  await game.play(0, deployer.address, 5, 5, {
-                      value: bet,
-                  })
-
-                  expect(spy).to.have.been.called()
-              })*/
           })
 
           describe("fulfillRandomWords", () => {

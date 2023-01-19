@@ -15,10 +15,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const gasLane = networkConfig[chainId]["gasLane"]
     const subscriptionLinkFund = ethers.utils.parseEther("10")
     const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"]
+    let VRFCoordinatorV2Mock
 
     console.log("Getting subscription ID for VRF coordinator...")
     if (developmentChains.includes(network.name)) {
-        const VRFCoordinatorV2Mock = await ethers.getContract(
+        VRFCoordinatorV2Mock = await ethers.getContract(
             "VRFCoordinatorV2Mock"
         )
         VRFCoordinatorV2Address = VRFCoordinatorV2Mock.address
@@ -54,6 +55,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     })
     console.log('"Game" contract deployed!')
 
+    if (developmentChains.includes(network.name)) {
+        await VRFCoordinatorV2Mock.addConsumer(
+            subscriptionId.toNumber(),
+            game.address
+        )
+    }
     if (
         !developmentChains.includes(network.name) &&
         process.env.ETHERSCAN_API_KEY
