@@ -6,6 +6,8 @@ const { developmentChains, networkConfig } = require("../../helper.config")
     ? describe.skip
     : describe("Game unit tests", () => {
           let game, VRFCoordinatorV2Mock, chainId, player, deployer
+          let blackOrRedGame, suitGame, cardGame
+          let deckLength
           /*
             The seeds cause the following shuffle:
             [
@@ -32,12 +34,17 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   deployer
               )
               chainId = network.config.chainId
+              blackOrRedGame = 0
+              suitGame = 1
+              cardGame = 2
+              deckLength = 52
           })
 
           describe("Constructor", () => {
               it("Initilizes contract correctly", async () => {
                   const owner = (await game.getOwner()).toString()
                   const minBet = (await game.MINIMUM_BET()).toString()
+                  const expectedMinBet = "1000000000000000"
                   const subscriptionId = (
                       await game.getSubscriptionId()
                   ).toString()
@@ -47,7 +54,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   ).toString()
 
                   assert.equal(deployer.address, owner)
-                  assert.equal(minBet, "1000000000000000")
+                  assert.equal(minBet, expectedMinBet)
                   assert.equal(
                       networkConfig[chainId]["subscriptionId"],
                       subscriptionId
@@ -69,26 +76,33 @@ const { developmentChains, networkConfig } = require("../../helper.config")
               })
 
               it("Reverts when owner withdraws more than available amount", async () => {
-                  const transactionHash = await deployer.sendTransaction({
+                  const amountTOSend = ethers.utils.parseEther("0.01")
+                  const amountTOWithdraw = ethers.utils.parseEther("0.25")
+
+                  await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("0.01"),
+                      value: amountTOSend,
                   })
+
                   await expect(
-                      game.withdraw(ethers.utils.parseEther("0.25"))
+                      game.withdraw(amountTOWithdraw)
                   ).to.be.revertedWith("Game__Not_Enough_Balance")
               })
 
               it("Allows owner to withdraw ether", async () => {
-                  const transactionHash = await deployer.sendTransaction({
+                  const amountTOSend = ethers.utils.parseEther("0.1")
+                  const amountTOWithdraw = ethers.utils.parseEther("0.05")
+
+                  await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("0.1"),
+                      value: amountTOSend,
                   })
-                  await expect(game.withdraw(ethers.utils.parseEther("0.05")))
-                      .to.not.be.reverted
+                  await expect(game.withdraw(amountTOWithdraw)).to.not.be
+                      .reverted
 
                   assert.equal(
                       (await game.provider.getBalance(game.address)).toString(),
-                      ethers.utils.parseEther("0.05")
+                      amountTOSend - amountTOWithdraw
                   )
               })
           })
@@ -103,55 +117,78 @@ const { developmentChains, networkConfig } = require("../../helper.config")
 
           describe("Play", () => {
               it("Can't play with less than minimum amount", async () => {
-                  let bet = await game.MINIMUM_BET()
-                  bet /= 2
+                  const bet = (await game.MINIMUM_BET()) / 2
+                  const index_chosen = 5
+                  const player_guess = 5
                   await expect(
-                      game.play(0, deployer.address, 5, 5, {
-                          value: bet,
-                      })
+                      game.play(
+                          blackOrRedGame,
+                          deployer.address,
+                          index_chosen,
+                          player_guess,
+                          {
+                              value: bet,
+                          }
+                      )
                   ).to.be.revertedWith("Game__Not_Enough_ETH")
               })
 
               it("Lets the request through if enough ETH is paid", async () => {
                   let bet = await game.MINIMUM_BET()
+                  const index_chosen = 5
+                  const player_guess = 5
                   await expect(
-                      game.play(0, deployer.address, 5, 5, {
-                          value: bet,
-                      })
+                      game.play(
+                          blackOrRedGame,
+                          deployer.address,
+                          index_chosen,
+                          player_guess,
+                          {
+                              value: bet,
+                          }
+                      )
                   ).to.not.be.reverted
               })
           })
 
           describe("fulfillRandomWords", () => {
               it("Cannot be called with nonexistent request IDs", async () => {
+                  const firstRequestId = 0
+                  const secondRequestId = 1
                   await expect(
-                      VRFCoordinatorV2Mock.fulfillRandomWords(0, game.address)
+                      VRFCoordinatorV2Mock.fulfillRandomWords(
+                          firstRequestId,
+                          game.address
+                      )
                   ).to.be.revertedWith("nonexistent request")
                   await expect(
-                      VRFCoordinatorV2Mock.fulfillRandomWords(1, game.address)
+                      VRFCoordinatorV2Mock.fulfillRandomWords(
+                          secondRequestId,
+                          game.address
+                      )
                   ).to.be.revertedWith("nonexistent request")
               })
           })
 
           describe("shuffleDeck", () => {
               it("Returns an array of length 52", async () => {
-                  const arr = await game._shuffleDeck(seeds)
-                  assert.equal(arr.length, 52)
+                  const shuffledDeck = await game._shuffleDeck(seeds)
+                  assert.equal(shuffledDeck.length, deckLength)
               })
 
               it("Returns a random array", async () => {
-                  const arr = await game._shuffleDeck(seeds)
-                  assert.notEqual(arr, [...Array(52).keys()]) // check that the array isn't [0, 1, 2, ..., 51]
+                  const shuffledDeck = await game._shuffleDeck(seeds)
+                  assert.notEqual(shuffledDeck, [...Array(deckLength).keys()]) // check that the array isn't [0, 1, 2, ..., 51]
               })
 
               it("Returns a premutation from 0 to 51", async () => {
-                  let arr = await game._shuffleDeck(seeds)
-                  let arrToSort = [...arr]
+                  let shuffledDeck = await game._shuffleDeck(seeds)
+                  let arrToSort = [...shuffledDeck]
                   arrToSort.sort((a, b) => {
                       return a - b
                   })
-                  arr = arrToSort
-                  assert.deepEqual(arr, [...Array(52).keys()]) // check that the sorted array is [0, 1, 2, ..., 51]
+                  shuffledDeck = arrToSort
+                  assert.deepEqual(shuffledDeck, [...Array(deckLength).keys()]) // check that the sorted array is [0, 1, 2, ..., 51]
               })
           })
 
@@ -161,10 +198,12 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const player_guess = 0
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const result = true
 
                   await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("1"),
+                      value: amountToFund,
                   })
 
                   await expect(
@@ -178,7 +217,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                       )
                   )
                       .to.emit(game, "GameResult")
-                      .withArgs(0, true, () => true)
+                      .withArgs(requestId, result, () => true)
               })
 
               it("Emits a losing event when the player loses", async () => {
@@ -186,10 +225,12 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const player_guess = 0
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const result = false
 
                   await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("1"),
+                      value: amountToFund,
                   })
 
                   await expect(
@@ -203,7 +244,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                       )
                   )
                       .to.emit(game, "GameResult")
-                      .withArgs(0, false, () => true)
+                      .withArgs(requestId, result, () => true)
               })
           })
 
@@ -213,10 +254,12 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const player_guess = 13
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const result = true
 
                   await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("1"),
+                      value: amountToFund,
                   })
 
                   await expect(
@@ -230,7 +273,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                       )
                   )
                       .to.emit(game, "GameResult")
-                      .withArgs(0, true, () => true)
+                      .withArgs(requestId, result, () => true)
               })
 
               it("Emits a losing event when the player loses", async () => {
@@ -238,10 +281,12 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const player_guess = 13
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const result = false
 
                   await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("1"),
+                      value: amountToFund,
                   })
 
                   await expect(
@@ -255,7 +300,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                       )
                   )
                       .to.emit(game, "GameResult")
-                      .withArgs(0, false, () => true)
+                      .withArgs(requestId, result, () => true)
               })
           })
           describe("card", () => {
@@ -264,10 +309,12 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const player_guess = 20
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const result = true
 
                   await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("1"),
+                      value: amountToFund,
                   })
 
                   await expect(
@@ -281,7 +328,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                       )
                   )
                       .to.emit(game, "GameResult")
-                      .withArgs(0, true, () => true)
+                      .withArgs(requestId, result, () => true)
               })
 
               it("Emits a losing event when the player loses", async () => {
@@ -289,10 +336,12 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const player_guess = 50
                   const bet_amount = (await game.MINIMUM_BET()) * 2
                   const requestId = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const result = false
 
                   await deployer.sendTransaction({
                       to: (await ethers.getContract("ExposedGame")).address,
-                      value: ethers.utils.parseEther("1"),
+                      value: amountToFund,
                   })
 
                   await expect(
@@ -306,7 +355,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                       )
                   )
                       .to.emit(game, "GameResult")
-                      .withArgs(0, false, () => true)
+                      .withArgs(requestId, result, () => true)
               })
           })
       })

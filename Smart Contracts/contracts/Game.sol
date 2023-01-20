@@ -5,7 +5,6 @@ pragma solidity ^0.8.7;
 /* imports */
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
-import "hardhat/console.sol";
 
 /* errors */
 error Game__Transfer_Failed();
