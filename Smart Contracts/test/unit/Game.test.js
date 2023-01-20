@@ -108,9 +108,14 @@ const { developmentChains, networkConfig } = require("../../helper.config")
 
           describe("GenerateNumbers", async () => {
               it("Returns a random array", async () => {
-                  const sortedArray = [...Array(52).keys()] // [0, 1, 2, ..., 51]
+                  const sortedArray = [...Array(deckLength).keys()] // [0, 1, 2, ..., 51]
                   const randomWords = await game._generateNumbers(seeds)
                   assert.notEqual(sortedArray, randomWords)
+                  assert.equal(sortedArray.length, deckLength)
+              })
+              it("Returns an array of length 52", async () => {
+                  const randomWords = await game._generateNumbers(seeds)
+                  assert.equal(randomWords.length, deckLength)
               })
           })
 

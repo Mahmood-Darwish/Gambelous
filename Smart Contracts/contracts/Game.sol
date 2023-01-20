@@ -189,7 +189,7 @@ contract Game is VRFConsumerBaseV2 {
         uint8[52] memory result;
         uint8 currentNumToCreate = 0;
         for (uint8 i = 0; i < seeds.length; i++) {
-            // (256 / 8) how many 8bit numbers you can get from a 256bit number
+            // (256 / 8) is how many 8bit numbers you can get from a 256bit number
             for (uint8 j = 0; j < (256 / 8); j++) {
                 result[currentNumToCreate] = uint8(seeds[i] % 256);
                 seeds[i] /= 256;
