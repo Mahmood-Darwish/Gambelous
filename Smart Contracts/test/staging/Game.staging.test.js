@@ -23,7 +23,7 @@ developmentChains.includes(network.name)
                           }
                       })
                       console.log("Getting bet...")
-                      let bet = await game.MINIMUM_BET()
+                      let bet = await game.getMinimumBet()
                       console.log("Playing Game...")
                       const tx = await game.play(0, deployer, 5, 5, {
                           value: bet,

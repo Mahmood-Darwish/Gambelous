@@ -37,7 +37,7 @@ const should = chai.should(),
                               reject(e)
                           }
                       })
-                      let bet = await game.MINIMUM_BET()
+                      let bet = await game.getMinimumBet()
                       await game.play(0, deployer.address, 5, 5, {
                           value: bet,
                       })

@@ -77,7 +77,6 @@ The finished version of this project should have a backend and frontend that wor
 ## TODO
 
 - Fix staging test
-- Add natspec documentation
 - Fix name casing everywhere
 - Improve readme.md
 

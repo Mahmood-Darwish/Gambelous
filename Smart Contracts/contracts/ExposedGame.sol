@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.16;
 
 /* imports */
 import "./Game.sol";
@@ -18,6 +18,9 @@ contract ExposedGame is Game {
         uint32 callbackGasLimit
     ) Game(vrfCoordinatorV2, subscriptionId, gasLane, callbackGasLimit) {}
 
+    /**
+     * @dev A public version of fulfillRandomWords for testing.
+     */
     function _fulfillRandomWords(
         uint256 requestId,
         uint256[] memory randomWords
@@ -25,69 +28,21 @@ contract ExposedGame is Game {
         fulfillRandomWords(requestId, randomWords);
     }
 
+    /**
+     * @dev A public version of generateNumbers for testing.
+     */
     function _generateNumbers(
         uint256[] memory seeds
     ) public pure returns (uint8[52] memory) {
         return generateNumbers(seeds);
     }
 
+    /**
+     * @dev A public version of shuffleDeck for testing.
+     */
     function _shuffleDeck(
-        uint256[] memory random_words
+        uint256[] memory randomWords
     ) public pure returns (uint8[52] memory) {
-        return shuffleDeck(random_words);
-    }
-
-    function _blackOrRed(
-        uint256[] memory random_words,
-        address player,
-        uint8 index_chosen,
-        uint8 player_guess,
-        uint256 bet_amount,
-        uint256 requestId
-    ) public {
-        blackOrRed(
-            random_words,
-            player,
-            index_chosen,
-            player_guess,
-            bet_amount,
-            requestId
-        );
-    }
-
-    function _suit(
-        uint256[] memory random_words,
-        address player,
-        uint8 index_chosen,
-        uint8 player_guess,
-        uint256 bet_amount,
-        uint256 requestId
-    ) public {
-        suit(
-            random_words,
-            player,
-            index_chosen,
-            player_guess,
-            bet_amount,
-            requestId
-        );
-    }
-
-    function _card(
-        uint256[] memory random_words,
-        address player,
-        uint8 index_chosen,
-        uint8 player_guess,
-        uint256 bet_amount,
-        uint256 requestId
-    ) public {
-        card(
-            random_words,
-            player,
-            index_chosen,
-            player_guess,
-            bet_amount,
-            requestId
-        );
+        return shuffleDeck(randomWords);
     }
 }
