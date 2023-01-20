@@ -21,7 +21,7 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![Pico](https://img.shields.io/badge/PicoCSS-gray.svg?style=for-the-badge)
+![Pico](https://img.shields.io/badge/Pico.CSS-gray.svg?style=for-the-badge)
 
 ## Development setup
 
@@ -77,8 +77,6 @@ The finished version of this project should have a backend and frontend that wor
 ## TODO
 
 - Fix staging test
-- Expand unit tests
-- Update tests to use constants instead of literals everywhere
 - Add natspec documentation
 - Fix name casing everywhere
 - Improve readme.md
