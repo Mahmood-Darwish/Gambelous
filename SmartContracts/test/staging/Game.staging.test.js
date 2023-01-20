@@ -17,7 +17,7 @@ developmentChains.includes(network.name)
                   const playerGuess = 5
                   const gameType = 0
 
-                  await new Promise(async (resolve, reject) => {
+                  return new Promise(async (resolve, reject) => {
                       game.once("GameResult", async () => {
                           console.log("Caught it!!!")
                           try {
