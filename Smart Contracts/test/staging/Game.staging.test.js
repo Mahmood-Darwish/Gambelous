@@ -13,6 +13,10 @@ developmentChains.includes(network.name)
 
           describe("play", () => {
               it("Emits A game result", async () => {
+                  const indexChosen = 5
+                  const playerGuess = 5
+                  const gameType = 0
+
                   await new Promise(async (resolve, reject) => {
                       game.once("GameResult", async () => {
                           console.log("Caught it!!!")
@@ -25,9 +29,15 @@ developmentChains.includes(network.name)
                       console.log("Getting bet...")
                       let bet = await game.getMinimumBet()
                       console.log("Playing Game...")
-                      const tx = await game.play(0, deployer, 5, 5, {
-                          value: bet,
-                      })
+                      const tx = await game.play(
+                          gameType,
+                          deployer,
+                          indexChosen,
+                          playerGuess,
+                          {
+                              value: bet,
+                          }
+                      )
                       console.log("Waiting for transaction...")
                       await tx.wait(1)
                       console.log("Ok, time to wait...")

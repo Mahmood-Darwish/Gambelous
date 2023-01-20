@@ -6,9 +6,6 @@ const chai = require("chai"),
 
 chai.use(spies)
 
-const should = chai.should(),
-    expect = chai.expect
-
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("Game integration tests", () => {
@@ -28,7 +25,18 @@ const should = chai.should(),
 
           describe("play", () => {
               it("Emits a game result", async () => {
+                  const indexChosen = 5
+                  const playerGuess = 5
+                  const betAmount = (await game.getMinimumBet()) * 2
+                  const gameType = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const requestId = 1
+
                   await new Promise(async (resolve, reject) => {
+                      await deployer.sendTransaction({
+                          to: (await ethers.getContract("Game")).address,
+                          value: amountToFund,
+                      })
                       game.once("GameResult", (requestId, result, deck) => {
                           try {
                               assert.equal(requestId.toString(), "1")
@@ -37,12 +45,17 @@ const should = chai.should(),
                               reject(e)
                           }
                       })
-                      let bet = await game.getMinimumBet()
-                      await game.play(0, deployer.address, 5, 5, {
-                          value: bet,
-                      })
+                      await game.play(
+                          gameType,
+                          deployer.address,
+                          indexChosen,
+                          playerGuess,
+                          {
+                              value: betAmount,
+                          }
+                      )
                       await VRFCoordinatorV2Mock.fulfillRandomWords(
-                          1,
+                          requestId,
                           game.address
                       )
                   })

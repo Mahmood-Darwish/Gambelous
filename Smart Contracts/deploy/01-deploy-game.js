@@ -11,11 +11,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
-    let VRFCoordinatorV2Address, subscriptionId
+    let VRFCoordinatorV2Mock, VRFCoordinatorV2Address, subscriptionId
     const gasLane = networkConfig[chainId]["gasLane"]
     const subscriptionLinkFund = ethers.utils.parseEther("10")
     const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"]
-    let VRFCoordinatorV2Mock
 
     console.log("Getting subscription ID for VRF coordinator...")
     if (developmentChains.includes(network.name)) {

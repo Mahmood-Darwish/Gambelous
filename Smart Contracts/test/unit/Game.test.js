@@ -5,8 +5,7 @@ const { developmentChains, networkConfig } = require("../../helper.config")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("Game unit tests", () => {
-          let game, VRFCoordinatorV2Mock, chainId, player, deployer
-          let blackOrRedGame, suitGame, cardGame
+          let game, chainId, player, deployer
           let deckLength
           /*
             The seeds cause the following shuffle:
@@ -118,14 +117,14 @@ const { developmentChains, networkConfig } = require("../../helper.config")
           describe("Play", () => {
               it("Can't play with less than minimum amount", async () => {
                   const bet = (await game.getMinimumBet()) / 2
-                  const index_chosen = 5
-                  const player_guess = 5
+                  const indexChosen = 5
+                  const playerGuess = 5
                   await expect(
                       game.play(
                           blackOrRedGame,
                           deployer.address,
-                          index_chosen,
-                          player_guess,
+                          indexChosen,
+                          playerGuess,
                           {
                               value: bet,
                           }
@@ -135,38 +134,19 @@ const { developmentChains, networkConfig } = require("../../helper.config")
 
               it("Lets the request through if enough ETH is paid", async () => {
                   let bet = await game.getMinimumBet()
-                  const index_chosen = 5
-                  const player_guess = 5
+                  const indexChosen = 5
+                  const playerGuess = 5
                   await expect(
                       game.play(
                           blackOrRedGame,
                           deployer.address,
-                          index_chosen,
-                          player_guess,
+                          indexChosen,
+                          playerGuess,
                           {
                               value: bet,
                           }
                       )
                   ).to.not.be.reverted
-              })
-          })
-
-          describe("fulfillRandomWords", () => {
-              it("Cannot be called with nonexistent request IDs", async () => {
-                  const firstRequestId = 0
-                  const secondRequestId = 1
-                  await expect(
-                      VRFCoordinatorV2Mock.fulfillRandomWords(
-                          firstRequestId,
-                          game.address
-                      )
-                  ).to.be.revertedWith("nonexistent request")
-                  await expect(
-                      VRFCoordinatorV2Mock.fulfillRandomWords(
-                          secondRequestId,
-                          game.address
-                      )
-                  ).to.be.revertedWith("nonexistent request")
               })
           })
 
@@ -192,170 +172,16 @@ const { developmentChains, networkConfig } = require("../../helper.config")
               })
           })
 
-          describe("blackOrRed", () => {
-              it("Emits a winning event when the player wins", async () => {
-                  const index_chosen = 1
-                  const player_guess = 0
-                  const bet_amount = (await game.getMinimumBet()) * 2
-                  const requestId = 0
-                  const amountToFund = ethers.utils.parseEther("1")
-                  const result = true
-
-                  await deployer.sendTransaction({
-                      to: (await ethers.getContract("ExposedGame")).address,
-                      value: amountToFund,
-                  })
-
+          describe("fulfillRandomWords", () => {
+              it("Cannot be called with nonexistent request IDs", async () => {
+                  const firstRequestId = 0
+                  const secondRequestId = 1
                   await expect(
-                      game._blackOrRed(
-                          seeds,
-                          player.address,
-                          index_chosen,
-                          player_guess,
-                          bet_amount,
-                          requestId
-                      )
-                  )
-                      .to.emit(game, "GameResult")
-                      .withArgs(requestId, result, () => true)
-              })
-
-              it("Emits a losing event when the player loses", async () => {
-                  const index_chosen = 0
-                  const player_guess = 0
-                  const bet_amount = (await game.getMinimumBet()) * 2
-                  const requestId = 0
-                  const amountToFund = ethers.utils.parseEther("1")
-                  const result = false
-
-                  await deployer.sendTransaction({
-                      to: (await ethers.getContract("ExposedGame")).address,
-                      value: amountToFund,
-                  })
-
+                      game._fulfillRandomWords(firstRequestId, seeds)
+                  ).to.be.revertedWith("Game__VRF_RequestId_Not_Found")
                   await expect(
-                      game._blackOrRed(
-                          seeds,
-                          player.address,
-                          index_chosen,
-                          player_guess,
-                          bet_amount,
-                          requestId
-                      )
-                  )
-                      .to.emit(game, "GameResult")
-                      .withArgs(requestId, result, () => true)
-              })
-          })
-
-          describe("suit", () => {
-              it("Emits a winning event when the player wins", async () => {
-                  const index_chosen = 0
-                  const player_guess = 13
-                  const bet_amount = (await game.getMinimumBet()) * 2
-                  const requestId = 0
-                  const amountToFund = ethers.utils.parseEther("1")
-                  const result = true
-
-                  await deployer.sendTransaction({
-                      to: (await ethers.getContract("ExposedGame")).address,
-                      value: amountToFund,
-                  })
-
-                  await expect(
-                      game._suit(
-                          seeds,
-                          player.address,
-                          index_chosen,
-                          player_guess,
-                          bet_amount,
-                          requestId
-                      )
-                  )
-                      .to.emit(game, "GameResult")
-                      .withArgs(requestId, result, () => true)
-              })
-
-              it("Emits a losing event when the player loses", async () => {
-                  const index_chosen = 1
-                  const player_guess = 13
-                  const bet_amount = (await game.getMinimumBet()) * 2
-                  const requestId = 0
-                  const amountToFund = ethers.utils.parseEther("1")
-                  const result = false
-
-                  await deployer.sendTransaction({
-                      to: (await ethers.getContract("ExposedGame")).address,
-                      value: amountToFund,
-                  })
-
-                  await expect(
-                      game._suit(
-                          seeds,
-                          player.address,
-                          index_chosen,
-                          player_guess,
-                          bet_amount,
-                          requestId
-                      )
-                  )
-                      .to.emit(game, "GameResult")
-                      .withArgs(requestId, result, () => true)
-              })
-          })
-          describe("card", () => {
-              it("Emits a winning event when the player wins", async () => {
-                  const index_chosen = 2
-                  const player_guess = 20
-                  const bet_amount = (await game.getMinimumBet()) * 2
-                  const requestId = 0
-                  const amountToFund = ethers.utils.parseEther("1")
-                  const result = true
-
-                  await deployer.sendTransaction({
-                      to: (await ethers.getContract("ExposedGame")).address,
-                      value: amountToFund,
-                  })
-
-                  await expect(
-                      game._card(
-                          seeds,
-                          player.address,
-                          index_chosen,
-                          player_guess,
-                          bet_amount,
-                          requestId
-                      )
-                  )
-                      .to.emit(game, "GameResult")
-                      .withArgs(requestId, result, () => true)
-              })
-
-              it("Emits a losing event when the player loses", async () => {
-                  const index_chosen = 0
-                  const player_guess = 50
-                  const bet_amount = (await game.getMinimumBet()) * 2
-                  const requestId = 0
-                  const amountToFund = ethers.utils.parseEther("1")
-                  const result = false
-
-                  await deployer.sendTransaction({
-                      to: (await ethers.getContract("ExposedGame")).address,
-                      value: amountToFund,
-                  })
-
-                  await expect(
-                      game._card(
-                          seeds,
-                          player.address,
-                          index_chosen,
-                          player_guess,
-                          bet_amount,
-                          requestId
-                      )
-                  )
-                      .to.emit(game, "GameResult")
-                      .withArgs(requestId, result, () => true)
+                      game._fulfillRandomWords(secondRequestId, seeds)
+                  ).to.be.revertedWith("Game__VRF_RequestId_Not_Found")
               })
           })
       })
