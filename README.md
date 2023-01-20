@@ -11,11 +11,11 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 1. [ Tech Stack ](#tech)
    1. [ Backend ](#tech-backend)
    2. [ Frontend ](#tech-frontend)
-2. [ Contract adress ](#address)
+2. [ Contract address ](#address)
    1. [ Goerli ](#address-goerli)
 3. [ Development setup ](#dev)
    1. [Deploying the contract](#dev-deploy)
-   2. [testinging the contract](#dev-test)
+   2. [Testing the contract](#dev-test)
 4. [ Current state of the project ](#cur)
 5. [ TODO ](#todo)
 6. [ Contributing ](#contrib)
@@ -102,11 +102,10 @@ yarn hardhat test
 yarn hardhat test --network goerli
 ```
 
+<a name="cur"></a>
 ## Current state of the project
 
-<a name="cur"></a>
-
-### `Under active development`
+![Current state](https://img.shields.io/badge/Under%20Active%20Development-green.svg?style=for-the-badge)
 
 The smart contract is all but ready, as for the frontend I haven't started implementing it yet.
 
