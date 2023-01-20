@@ -51,6 +51,8 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 
 ### Goerli
 
+[Etherscan link](https://goerli.etherscan.io/address/0xf498E676EE5335b3000851688E0AA7ceAb37c1A9)
+
 ```
 0xf498E676EE5335b3000851688E0AA7ceAb37c1A9
 ```
@@ -103,6 +105,7 @@ yarn hardhat test --network goerli
 ```
 
 <a name="cur"></a>
+
 ## Current state of the project
 
 ![Current state](https://img.shields.io/badge/Under%20Active%20Development-green.svg?style=for-the-badge)
