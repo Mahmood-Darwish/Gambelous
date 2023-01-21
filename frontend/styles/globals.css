@@ -105,3 +105,8 @@ a {
     color-scheme: dark;
   }
 }
+
+.card-table {
+    display: flex;
+    flex-wrap: wrap;
+}
