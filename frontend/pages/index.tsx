@@ -3,13 +3,7 @@ import Image from "next/image"
 import { Inter } from "@next/font/google"
 import styles from "@/styles/Home.module.css"
 import Header from "../components/Header"
-
-// or, if using TypeScript, feel free to "implements ICard"
-class CustomCard extends Card {
-    constructor(cardName: CardName, customValue = "") {
-        super(cardName)
-    }
-}
+import imgs from "../public/index"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -25,7 +19,7 @@ export default function Home() {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header />
-            <Card card={"Ad"} deckType={"basic"} height="20px" />
+            <img src={imgs[0]} />
         </div>
     )
 }
