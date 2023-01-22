@@ -47,7 +47,6 @@ chai.use(spies)
                       })
                       await game.play(
                           gameType,
-                          deployer.address,
                           indexChosen,
                           playerGuess,
                           {

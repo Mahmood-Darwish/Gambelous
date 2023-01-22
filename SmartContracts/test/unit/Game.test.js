@@ -127,7 +127,6 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   await expect(
                       game.play(
                           blackOrRedGame,
-                          deployer.address,
                           indexChosen,
                           playerGuess,
                           {
@@ -144,7 +143,6 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   await expect(
                       game.play(
                           blackOrRedGame,
-                          deployer.address,
                           indexChosen,
                           playerGuess,
                           {

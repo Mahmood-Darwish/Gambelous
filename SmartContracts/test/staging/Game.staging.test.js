@@ -31,7 +31,6 @@ developmentChains.includes(network.name)
                       console.log("Playing Game...")
                       const tx = await game.play(
                           gameType,
-                          deployer,
                           indexChosen,
                           playerGuess,
                           {

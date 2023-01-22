@@ -1,14 +1,15 @@
 import Head from "next/head"
-import Image from "next/image"
 import { Inter } from "@next/font/google"
 import styles from "@/styles/Home.module.css"
 import Header from "../components/Header"
 import Table from "../components/Table"
 import Menu from "../components/Menu"
-import { Dispatch, SetStateAction, useState } from "react"
-import { getUnpackedSettings } from "http2"
+import { useMoralis } from "react-moralis"
+import { useState } from "react"
 
 const inter = Inter({ subsets: ["latin"] })
+
+const supportedChains = ["31337", "5"]
 
 export enum GameType {
     BlackOrRed,
@@ -28,6 +29,7 @@ export default function Home() {
     const [gameType, setGameType] = useState<GameType>(GameType.None)
     const [bet, setBet] = useState<number>(0)
     const [guess, setGuess] = useState<number>(0)
+    const { isWeb3Enabled, chainId } = useMoralis()
 
     return (
         <div>
@@ -40,20 +42,34 @@ export default function Home() {
                 <link rel="icon" href="/icon.png" />
             </Head>
             <Header />
-            <Table
-                playing={playing}
-                setPlaying={setPlaying}
-                gameType={gameType}
-                bet={bet}
-                guess={guess}
-            />
-            <Menu
-                playing={playing}
-                setPlaying={setPlaying}
-                setGameType={setGameType}
-                setBet={setBet}
-                setGuess={setGuess}
-            />
+            {isWeb3Enabled ? (
+                <div>
+                    {supportedChains.includes(
+                        parseInt(chainId === null ? "" : chainId).toString()
+                    ) ? (
+                        <div>
+                            <Table
+                                playing={playing}
+                                setPlaying={setPlaying}
+                                gameType={gameType}
+                                bet={bet}
+                                guess={guess}
+                            />
+                            <Menu
+                                playing={playing}
+                                setPlaying={setPlaying}
+                                setGameType={setGameType}
+                                setBet={setBet}
+                                setGuess={setGuess}
+                            />
+                        </div>
+                    ) : (
+                        <div>{`Please switch to a supported chainId. The supported Chain Ids are: ${supportedChains}`}</div>
+                    )}
+                </div>
+            ) : (
+                <div>Please connect to a Wallet</div>
+            )}
         </div>
     )
 }

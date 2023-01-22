@@ -91,14 +91,12 @@ contract Game is VRFConsumerBaseV2 {
      * @notice The main function of the contract. Starts a game.
      * @notice Reverts in case the bet amount is less than the minimum.
      * @param game The type of the game to start.
-     * @param player Address of the player's wallet.
      * @param indexChosen Which card the player chose from the deck.
      * @param playerGuess What card did the player expect it to be.
      * @return requestId An ID to uniquely identify the game.
      */
     function play(
         GameTypes game,
-        address player,
         uint8 indexChosen,
         uint8 playerGuess
     ) external payable returns (uint256) {
@@ -116,7 +114,7 @@ contract Game is VRFConsumerBaseV2 {
 
         s_requests[requestId] = GameRequest({
             gameType: game,
-            player: player,
+            player: msg.sender,
             indexChosen: indexChosen,
             playerGuess: playerGuess,
             betAmount: msg.value

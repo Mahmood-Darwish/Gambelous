@@ -3,6 +3,9 @@ import { cards, back } from "../public/index"
 import { GameType, GameState } from "@/pages"
 import { useState } from "react"
 import { StaticImageData } from "next/image"
+import { useMoralis, useWeb3Contract } from "react-moralis"
+import abi from "constants"
+import contractAddresses from "constants"
 
 interface tableProps {
     playing: GameState
@@ -12,10 +15,29 @@ interface tableProps {
     guess: number
 }
 
+interface contractAddressesInterface {
+    [key: string]: string[]
+}
+
 export default function Table(props: tableProps) {
     const { playing, setPlaying, gameType, bet, guess } = props
+
     const [playingCards, setPlayingCards] =
         useState<Array<[number, StaticImageData]>>(cards)
+
+    const addresses: contractAddressesInterface = contractAddresses
+    const { chainId: chainIdHex } = useMoralis()
+    const [indexChosen, setIndexChosen] = useState<number>(-1)
+    const chainId: string = parseInt(chainIdHex!).toString()
+    const gameAddress = chainId in addresses ? addresses[chainId][0] : null
+
+    const { runContractFunction: play } = useWeb3Contract({
+        abi: abi,
+        contractAddress: gameAddress!,
+        functionName: "play",
+        params: { gameType, indexChosen, guess },
+        msgValue: bet,
+    })
 
     function shuffle(playingCards: [number, StaticImageData][]) {
         let currentIndex = playingCards.length,
@@ -44,6 +66,7 @@ export default function Table(props: tableProps) {
                     <button
                         onClick={async () => {
                             console.log(gameType, bet, guess, index)
+                            setIndexChosen(index)
                             setPlaying(GameState.Loading)
                             // make request to smart contract
                             // shuffle cards based on event
