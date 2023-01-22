@@ -64,7 +64,7 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 To start developing on the smart contract just clone the repo then run:
 
 ```
-cd "smart contracts"
+cd "SmartContracts"
 yarn
 ```
 
@@ -122,7 +122,8 @@ The finished version of this project should have a backend and frontend that wor
 
 - Fix staging test
 - Improve readme.md
-- Start Frontend development
+- Connect the front end with the contract
+- Style the website
 
 <a name="contrib"></a>
 
