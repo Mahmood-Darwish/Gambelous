@@ -44,10 +44,10 @@ export default function Table(props: tableProps) {
                     <button
                         onClick={async () => {
                             console.log(gameType, bet, guess, index)
+                            setPlaying(GameState.Loading)
                             // make request to smart contract
                             // shuffle cards based on event
                             shuffle(playingCards)
-                            setPlaying(GameState.Loading)
                             await new Promise((r) => setTimeout(r, 5000))
                             setPlaying(GameState.NotPlaying)
                         }}
