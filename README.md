@@ -122,6 +122,9 @@ And finally, I need to make tests for the frontend.
 
 - Fix staging test
 - Improve readme.md
+- Add how to play page
+- Add notifications
+- Handle events from smart contract
 - Connect the front end with the contract
 - Style the website
 

@@ -44,7 +44,7 @@ export default function Menu(props: menuProps) {
             return
         }
         setPlaying(GameState.Playing)
-        setBet(parseInt(value))
+        setBet(parseFloat(value))
         setGuess(parseInt(guess))
         setGameType(parseGameType(gameType))
     }
