@@ -110,11 +110,11 @@ yarn hardhat test --network goerli
 
 ![Current state](https://img.shields.io/badge/Under%20Active%20Development-green.svg?style=for-the-badge)
 
-The smart contract is all but ready, as for the frontend I haven't started implementing it yet.
+The smart contract is finished. The frontend still needs a lot of work.
 
-I plan to expand the tests on the smart contract and add proper documentation. After that is finished I will start working on the frontend.
+Currently, the frontend is finished but it's not connected to smart contract. It also needs styling.
 
-The finished version of this project should have a backend and frontend that work seamlessly with each other.
+And finally, I need to make tests for the frontend.
 
 <a name="todo"></a>
 
