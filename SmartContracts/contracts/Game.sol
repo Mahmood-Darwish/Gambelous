@@ -56,6 +56,12 @@ contract Game is VRFConsumerBaseV2 {
      * @param deck The distribution of the deck for this game.
      */
     event GameResult(uint256 indexed requestId, bool result, uint8[52] deck);
+    /**
+     * @notice This event sends an ID of a game to be tracked.
+     * @param player The address of the player of a certain game.
+     * @param requestId A unique ID to identify the game producing the event.
+     */
+    event GameId(address indexed player, uint256 requestId);
 
     /* modifiers */
     modifier onwerOnly() {
@@ -120,7 +126,7 @@ contract Game is VRFConsumerBaseV2 {
             betAmount: msg.value
         });
 
-        return requestId;
+        emit GameId(msg.sender, requestId);
     }
 
     /**

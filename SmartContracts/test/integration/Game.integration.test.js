@@ -45,14 +45,9 @@ chai.use(spies)
                               reject(e)
                           }
                       })
-                      await game.play(
-                          gameType,
-                          indexChosen,
-                          playerGuess,
-                          {
-                              value: betAmount,
-                          }
-                      )
+                      await game.play(gameType, indexChosen, playerGuess, {
+                          value: betAmount,
+                      })
                       await VRFCoordinatorV2Mock.fulfillRandomWords(
                           requestId,
                           game.address

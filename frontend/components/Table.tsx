@@ -67,10 +67,15 @@ export default function Table(props: tableProps) {
         console.log(await tx.wait(1))
     }
 
+    const handleError = async function (error: Error) {
+        console.log(error)
+    }
+
     const handleGame = async () => {
+        // catch event after play
         await play({
             onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
-            onError: (error) => console.log(error),
+            onError: (error) => handleError(error),
         })
         // shuffle cards based on event
         shuffle(playingCards)

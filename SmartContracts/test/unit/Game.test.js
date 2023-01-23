@@ -125,14 +125,9 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const indexChosen = 5
                   const playerGuess = 5
                   await expect(
-                      game.play(
-                          blackOrRedGame,
-                          indexChosen,
-                          playerGuess,
-                          {
-                              value: bet,
-                          }
-                      )
+                      game.play(blackOrRedGame, indexChosen, playerGuess, {
+                          value: bet,
+                      })
                   ).to.be.revertedWith("Game__Not_Enough_ETH")
               })
 
@@ -141,15 +136,41 @@ const { developmentChains, networkConfig } = require("../../helper.config")
                   const indexChosen = 5
                   const playerGuess = 5
                   await expect(
-                      game.play(
-                          blackOrRedGame,
-                          indexChosen,
-                          playerGuess,
-                          {
-                              value: bet,
-                          }
-                      )
+                      game.play(blackOrRedGame, indexChosen, playerGuess, {
+                          value: bet,
+                      })
                   ).to.not.be.reverted
+              })
+
+              it("Emits a game ID", async () => {
+                  const indexChosen = 5
+                  const playerGuess = 5
+                  const betAmount = (await game.getMinimumBet()) * 2
+                  const gameType = 0
+                  const amountToFund = ethers.utils.parseEther("1")
+                  const requestId = 1
+
+                  await new Promise(async (resolve, reject) => {
+                      await deployer.sendTransaction({
+                          to: (await ethers.getContract("ExposedGame")).address,
+                          value: amountToFund,
+                      })
+                      game.once("GameId", (address, requestId) => {
+                          try {
+                              assert.equal(requestId.toString(), requestId)
+                              assert.equal(
+                                  address.toString(),
+                                  deployer.address.toString()
+                              )
+                              resolve()
+                          } catch (e) {
+                              reject(e)
+                          }
+                      })
+                      await game.play(gameType, indexChosen, playerGuess, {
+                          value: betAmount,
+                      })
+                  })
               })
           })
 
