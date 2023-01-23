@@ -137,3 +137,7 @@ And finally, I need to make tests for the frontend.
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
+
+## Acknowledgments
+
+I was able to implement this after taking [this course](https://github.com/smartcontractkit/full-blockchain-solidity-course-js). I own a lot of thanks to [Patrick Collins](https://github.com/PatrickAlphaC) for making the course. Check it out!
