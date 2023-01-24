@@ -127,6 +127,7 @@ contract Game is VRFConsumerBaseV2 {
         });
 
         emit GameId(msg.sender, requestId);
+        return requestId;
     }
 
     /**

@@ -1,11 +1,12 @@
 import Head from "next/head"
 import { Inter } from "@next/font/google"
 import styles from "@/styles/Home.module.css"
-import Header from "../components/Header"
-import Table from "../components/Table"
-import Menu from "../components/Menu"
-import { useMoralis } from "react-moralis"
 import { useState } from "react"
+import Header from "../components/Header"
+import Menu from "../components/Menu"
+import Table from "../components/Table"
+import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
+import { InjectedConnector } from "wagmi/connectors/injected"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -29,7 +30,13 @@ export default function Home() {
     const [gameType, setGameType] = useState<GameType>(GameType.None)
     const [bet, setBet] = useState<number>(0)
     const [guess, setGuess] = useState<number>(0)
-    const { isWeb3Enabled, chainId } = useMoralis()
+
+    const { address, isConnected } = useAccount()
+    const { connect } = useConnect({
+        connector: new InjectedConnector(),
+    })
+    const { disconnect } = useDisconnect()
+    const { chain, chains } = useNetwork()
 
     return (
         <div>
@@ -42,10 +49,10 @@ export default function Home() {
                 <link rel="icon" href="/icon.png" />
             </Head>
             <Header />
-            {isWeb3Enabled ? (
+            {isConnected ? (
                 <div>
                     {supportedChains.includes(
-                        parseInt(chainId === null ? "" : chainId).toString()
+                        (chain?.id === undefined ? "" : chain?.id).toString()
                     ) ? (
                         <div>
                             <Table
@@ -68,7 +75,9 @@ export default function Home() {
                     )}
                 </div>
             ) : (
-                <div>Please connect to a Wallet</div>
+                <div>
+                    <p>Please connect to a Wallet</p>
+                </div>
             )}
         </div>
     )

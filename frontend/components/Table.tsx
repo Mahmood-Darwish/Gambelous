@@ -3,10 +3,10 @@ import { cards, back } from "../public/index"
 import { GameType, GameState } from "@/pages"
 import { useEffect, useState } from "react"
 import { StaticImageData } from "next/image"
-import { useMoralis, useWeb3Contract } from "react-moralis"
 import { abi, contractAddresses } from "../constants"
 import { ContractTransaction } from "ethers"
-import { Moralis } from "moralis-v1"
+import { ethers } from "ethers"
+import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 
 interface tableProps {
     playing: GameState
@@ -27,21 +27,9 @@ export default function Table(props: tableProps) {
     const [indexChosen, setIndexChosen] = useState<number>(-1)
 
     const addresses: contractAddressesInterface = contractAddresses
-    const { chainId: chainIdHex } = useMoralis()
-    const chainId: string = parseInt(chainIdHex!).toString()
+    const { chain, chains } = useNetwork()
+    const chainId = chain?.id != undefined ? chain.id.toString() : ""
     const gameAddress = chainId in addresses ? addresses[chainId][0] : null
-
-    const { runContractFunction: play } = useWeb3Contract({
-        abi: abi,
-        contractAddress: gameAddress!,
-        functionName: "play",
-        params: {
-            game: gameType,
-            indexChosen: indexChosen,
-            playerGuess: guess,
-        },
-        msgValue: Moralis.Units.Token(bet, 18),
-    })
 
     function shuffle(playingCards: [number, StaticImageData][]) {
         let currentIndex = playingCards.length,
@@ -64,7 +52,13 @@ export default function Table(props: tableProps) {
     }
 
     const handleSuccess = async function (tx: ContractTransaction) {
-        console.log(await tx.wait(1))
+        console.log("Success")
+        console.log("Player address: " + (await tx.wait(1)).events[1].topics[1])
+        const requestId = ethers.utils.defaultAbiCoder.decode(
+            ["uint256"],
+            (await tx.wait(1)).events[1].data
+        )
+        console.log("RequestId: " + requestId)
     }
 
     const handleError = async function (error: Error) {
@@ -72,18 +66,24 @@ export default function Table(props: tableProps) {
     }
 
     const handleGame = async () => {
-        // catch event after play
-        await play({
+        /*console.log(gameAddress)
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const value = await play({
             onSuccess: (tx) => handleSuccess(tx as ContractTransaction),
             onError: (error) => handleError(error),
         })
         // shuffle cards based on event
         shuffle(playingCards)
+        */
+        console.log(gameType, bet, guess)
         setPlaying(GameState.NotPlaying)
     }
 
     useEffect(() => {
-        handleGame()
+        if (indexChosen != -1) {
+            handleGame()
+        }
     }, [indexChosen])
 
     return (

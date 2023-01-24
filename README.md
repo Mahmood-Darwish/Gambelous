@@ -19,6 +19,7 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 4. [ Current state of the project ](#cur)
 5. [ TODO ](#todo)
 6. [ Contributing ](#contrib)
+7. [ Acknowledgments ](#ack)
 
 <a name="tech"></a>
 
@@ -127,6 +128,7 @@ And finally, I need to make tests for the frontend.
 - Handle events from smart contract
 - Connect the front end with the contract
 - Style the website
+- Add error handling
 
 <a name="contrib"></a>
 
@@ -137,6 +139,8 @@ And finally, I need to make tests for the frontend.
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
 5. Create a new Pull Request
+
+<a name="ack"></a>
 
 ## Acknowledgments
 
