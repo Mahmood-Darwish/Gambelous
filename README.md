@@ -129,6 +129,7 @@ And finally, I need to make tests for the frontend.
 - Connect the front end with the contract
 - Style the website
 - Add error handling
+- Add tests for frontend
 
 <a name="contrib"></a>
 

@@ -1,6 +1,7 @@
 import "@/styles/globals.css"
 import type { AppProps } from "next/app"
-import { WagmiConfig, createClient, configureChains, mainnet } from "wagmi"
+import { WagmiConfig, createClient, configureChains, goerli } from "wagmi"
+import { hardhat } from "wagmi/chains"
 
 import { publicProvider } from "wagmi/providers/public"
 
@@ -10,7 +11,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect"
 
 const { chains, provider, webSocketProvider } = configureChains(
-    [mainnet],
+    [goerli, hardhat],
     [publicProvider()]
 )
 
