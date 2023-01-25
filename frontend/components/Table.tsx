@@ -7,10 +7,15 @@ import { abi, contractAddresses } from "../constants"
 import {
     useAccount,
     useConnect,
+    useContract,
+    useContractEvent,
     useContractRead,
     useDisconnect,
     useNetwork,
+    useProvider,
+    useSigner,
 } from "wagmi"
+import { utils } from "ethers"
 
 interface tableProps {
     playing: GameState
@@ -38,16 +43,37 @@ export default function Table(props: tableProps) {
             ? (addresses[chainId][0] as `0x${string}`)
             : ("0x" as `0x${string}`)
 
-    const { data, isError, isLoading, refetch } = useContractRead({
+    const { data: signer, isError, isLoading } = useSigner()
+    const game = useContract({
         address: gameAddress,
         abi: abi,
-        functionName: "getMinimumBet",
+        signerOrProvider: signer,
+    })
+
+    useContractEvent({
+        address: gameAddress,
+        abi: abi,
+        eventName: "GameId",
+        listener(player, requestId) {
+            console.log(player, requestId, "HELL YES")
+        },
+    })
+
+    useContractEvent({
+        address: gameAddress,
+        abi: abi,
+        eventName: "GameResult",
+        listener(player, result, deck) {
+            console.log(player, result, deck, "HELL YES")
+        },
     })
 
     const handleGame = async () => {
+        console.log(game)
         console.log(gameAddress)
-        const { data: temp } = await refetch()
-        console.log(temp, gameType, bet, guess, chains, gameAddress)
+        game!.play(gameType, indexChosen, guess, {
+            value: utils.parseEther(bet.toString()),
+        })
         setPlaying(GameState.NotPlaying)
     }
 

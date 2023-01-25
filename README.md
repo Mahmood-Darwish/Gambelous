@@ -52,10 +52,10 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 
 ### Goerli
 
-[Etherscan link](https://goerli.etherscan.io/address/0xf498E676EE5335b3000851688E0AA7ceAb37c1A9)
+[Etherscan link](https://goerli.etherscan.io/address/0xa710af3d0833fb7018c9c2a3365c3a44e29fd816)
 
 ```
-0xf498E676EE5335b3000851688E0AA7ceAb37c1A9
+0xA710Af3d0833FB7018c9C2A3365C3A44e29FD816
 ```
 
 <a name="dev"></a>
@@ -126,7 +126,7 @@ And finally, I need to make tests for the frontend.
 - Add how to play page
 - Add notifications
 - Handle events from smart contract
-- Connect the front end with the contract
+- Catch events from smart contract
 - Style the website
 - Add error handling
 - Add tests for frontend
