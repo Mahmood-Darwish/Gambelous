@@ -9,6 +9,7 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet"
 import { InjectedConnector } from "wagmi/connectors/injected"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect"
+import dynamic from "next/dynamic"
 
 const { chains, provider, webSocketProvider } = configureChains(
     [goerli, hardhat],
@@ -44,10 +45,14 @@ const client = createClient({
     webSocketProvider,
 })
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
     return (
         <WagmiConfig client={client}>
             <Component {...pageProps} />
         </WagmiConfig>
     )
 }
+
+export default dynamic(() => Promise.resolve(App), {
+    ssr: false,
+})
