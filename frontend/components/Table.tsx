@@ -34,6 +34,7 @@ export default function Table(props: tableProps) {
     const [playingCards, setPlayingCards] =
         useState<Array<[number, StaticImageData]>>(cards)
     const [indexChosen, setIndexChosen] = useState<number>(-1)
+    const [gameId, setGameId] = useState<string>("")
 
     const addresses: contractAddressesInterface = contractAddresses
     const { chain, chains } = useNetwork()
@@ -54,32 +55,59 @@ export default function Table(props: tableProps) {
         address: gameAddress,
         abi: abi,
         eventName: "GameId",
-        listener(player, requestId) {
-            console.log(player, requestId, "HELL YES")
+        async listener(player, requestId) {
+            if (player?.toString() == (await signer?.getAddress())) {
+                setGameId(requestId as string)
+                console.log(requestId)
+            }
+            console.log(
+                typeof player,
+                requestId?.toString(),
+                typeof (await signer?.getAddress())
+            )
         },
     })
+
+    const shuffle = (deck: number[]) => {
+        const temp: Array<[number, StaticImageData]> = []
+        for (let i = 0; i < deck.length; i++) {
+            for (let j = 0; j < deck.length; j++) {
+                if (playingCards[j][0] == deck[i]) {
+                    temp.push(playingCards[j])
+                    break
+                }
+            }
+        }
+        setPlayingCards(temp)
+    }
 
     useContractEvent({
         address: gameAddress,
         abi: abi,
         eventName: "GameResult",
-        listener(player, result, deck) {
-            console.log(player, result, deck, "HELL YES")
+        async listener(requestId, result, deck) {
+            if (requestId?.toString() == gameId) {
+                shuffle(deck as number[])
+                setGameId("")
+                setPlaying(GameState.NotPlaying)
+            }
+            console.log(requestId?.toString(), gameId)
+            console.log(result)
         },
     })
 
-    const handleGame = async () => {
+    const playGame = async () => {
         console.log(game)
         console.log(gameAddress)
+        setPlaying(GameState.Loading)
         game!.play(gameType, indexChosen, guess, {
             value: utils.parseEther(bet.toString()),
         })
-        setPlaying(GameState.NotPlaying)
     }
 
     useEffect(() => {
         if (indexChosen != -1) {
-            handleGame()
+            playGame()
         }
     }, [indexChosen])
 
@@ -89,7 +117,6 @@ export default function Table(props: tableProps) {
                 return (
                     <button
                         onClick={async () => {
-                            setPlaying(GameState.Loading)
                             setIndexChosen(index)
                         }}
                         disabled={playing != GameState.Playing}

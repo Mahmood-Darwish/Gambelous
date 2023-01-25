@@ -125,11 +125,10 @@ And finally, I need to make tests for the frontend.
 - Improve readme.md
 - Add how to play page
 - Add notifications
-- Handle events from smart contract
-- Catch events from smart contract
 - Style the website
 - Add error handling
 - Add tests for frontend
+- Show gas calculation for the reward
 
 <a name="contrib"></a>
 
