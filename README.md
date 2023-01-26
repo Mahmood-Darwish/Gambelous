@@ -122,7 +122,6 @@ And finally, I need to make tests for the frontend.
 
 ## TODO
 
-- Make a better select based on game
 - Style the website
 - Fix staging test
 - Improve readme.md
