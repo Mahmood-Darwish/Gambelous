@@ -1,5 +1,7 @@
 import { GameType, GameState } from "@/pages"
 import { notifyType, useNotification } from "web3uikit"
+import { blackOrRed, card, suit } from "@/public"
+import { useState } from "react"
 
 interface menuProps {
     playing: GameState
@@ -61,10 +63,34 @@ export default function Menu(props: menuProps) {
         return GameType.None
     }
 
+    const parseGuess = (guess: string, gameType: string): string => {
+        if (gameType == "blackOrRed") {
+            if (guess == "Red") {
+                return "0"
+            }
+            return "13"
+        }
+        if (gameType == "suit") {
+            if (guess == "Hearts") {
+                return "0"
+            }
+            if (guess == "Spades") {
+                return "13"
+            }
+            if (guess == "Dimonds") {
+                return "26"
+            }
+            if (guess == "Clubs") {
+                return "39"
+            }
+        }
+        return card.findIndex((x) => x === guess).toString()
+    }
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
         const gameType: string = event.target[0].value
-        const guess: string = event.target[1].value
+        const guess: string = parseGuess(event.target[1].value, gameType)
         const value: string = event.target[2].value
         if (!validateInput(gameType, guess, value)) {
             handleNewNotification(
@@ -81,23 +107,35 @@ export default function Menu(props: menuProps) {
         handleNewNotification("success", "Game Started", "Please pick a card!")
     }
 
+    const [selected, setSelected] = useState("blackOrRed")
+    const changeSelectOptionHandler = (event: any) => {
+        setSelected(event.target.value)
+    }
+    let type = blackOrRed
+    if (selected === "blackOrRed") {
+        type = blackOrRed
+    } else if (selected === "suit") {
+        type = suit
+    } else if (selected === "card") {
+        type = card
+    }
+    const options = type?.map((el) => <option key={el}>{el}</option>)
+
     return (
         <form onSubmit={handleSubmit}>
             <label>Choose a game:</label>
-            <select name="games" disabled={playing != GameState.NotPlaying}>
-                <option value="">--Please choose an option--</option>
+            <select
+                disabled={playing != GameState.NotPlaying}
+                onChange={changeSelectOptionHandler}
+            >
                 <option value="blackOrRed"> Black Or Red </option>
                 <option value="suit"> Suit </option>
                 <option value="card"> Card </option>
             </select>
             <label>Enter your guess:</label>
-            <input
-                type="text"
-                placeholder="0"
-                pattern="\d*"
-                disabled={playing != GameState.NotPlaying}
-                required
-            />
+            <select disabled={playing != GameState.NotPlaying}>
+                {options}
+            </select>
             <label>
                 Enter amount to bet in ETH (Minimum bet is 0.001 ETH):
             </label>
