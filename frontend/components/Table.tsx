@@ -16,6 +16,7 @@ import {
     useSigner,
 } from "wagmi"
 import { utils } from "ethers"
+import { notifyType, useNotification } from "web3uikit"
 
 interface tableProps {
     playing: GameState
@@ -67,6 +68,21 @@ export default function Table(props: tableProps) {
         )
     }, [gameId, playingCards])
 
+    const dispatch = useNotification()
+
+    const handleNewNotification = (
+        type: notifyType,
+        title: string,
+        message: string
+    ) => {
+        dispatch({
+            type,
+            message: message,
+            title: title,
+            position: "topR",
+        })
+    }
+
     const addresses: contractAddressesInterface = contractAddresses
     const { chain, chains } = useNetwork()
     const chainId = chain?.id != undefined ? chain.id.toString() : ""
@@ -89,11 +105,14 @@ export default function Table(props: tableProps) {
         async listener(player, requestId) {
             if (player?.toString() == (await signer?.getAddress())) {
                 setGameId(requestId as string)
-                console.log(requestId)
+                handleNewNotification(
+                    "info",
+                    "Game ID Received",
+                    `The game has been received by the smart contract. Your game ID is ${
+                        requestId as string
+                    }.`
+                )
             }
-            console.log(
-                requestId?.toString()
-            )
         },
     })
 
@@ -103,22 +122,48 @@ export default function Table(props: tableProps) {
         eventName: "GameResult",
         async listener(requestId, result, deck) {
             if (requestId?.toString() == gameId.toString()) {
+                handleNewNotification(
+                    (result as boolean) ? "success" : "error",
+                    (result as boolean) ? "You've won" : "You've lost",
+                    `The result of the game has come back. ${
+                        (result as boolean) ? "You've won" : "You've lost"
+                    }!`
+                )
                 setGameId("0x")
                 setPlayingCards(deck as number[])
                 setPlaying(GameState.NotPlaying)
             }
-            console.log(requestId?.toString(), gameId.toString())
-            console.log(result)
         },
     })
 
     const playGame = async (indexChosen: number) => {
-        console.log(game)
-        console.log(gameAddress)
         setPlaying(GameState.Loading)
-        game!.play(gameType, indexChosen, guess, {
-            value: utils.parseEther(bet.toString()),
-        })
+        try {
+            game!
+                .play(gameType, indexChosen, guess, {
+                    value: utils.parseEther(bet.toString()),
+                })
+                .then((_: any) => {})
+                .catch((e: any) => {
+                    handleNewNotification(
+                        "error",
+                        "Can't start game",
+                        `Error message: ${
+                            e.code == "ACTION_REJECTED"
+                                ? "user rejected transaction."
+                                : e
+                        }`
+                    )
+                    setPlaying(GameState.NotPlaying)
+                })
+        } catch (e) {
+            handleNewNotification(
+                "error",
+                "Can't start game",
+                `Error message: ${e}`
+            )
+            setPlaying(GameState.NotPlaying)
+        }
     }
 
     return (
@@ -143,7 +188,6 @@ export default function Table(props: tableProps) {
                     </button>
                 )
             })}
-            <div>{playing}</div>
         </div>
     )
 }

@@ -10,6 +10,7 @@ import { InjectedConnector } from "wagmi/connectors/injected"
 import { MetaMaskConnector } from "wagmi/connectors/metaMask"
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect"
 import dynamic from "next/dynamic"
+import { NotificationProvider } from "web3uikit"
 
 const { chains, provider, webSocketProvider } = configureChains(
     [goerli, hardhat],
@@ -48,7 +49,9 @@ const client = createClient({
 function App({ Component, pageProps }: AppProps) {
     return (
         <WagmiConfig client={client}>
-            <Component {...pageProps} />
+            <NotificationProvider>
+                <Component {...pageProps} />
+            </NotificationProvider>
         </WagmiConfig>
     )
 }

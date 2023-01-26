@@ -1,4 +1,5 @@
 import { GameType, GameState } from "@/pages"
+import { notifyType, useNotification } from "web3uikit"
 
 interface menuProps {
     playing: GameState
@@ -11,11 +12,37 @@ interface menuProps {
 export default function Menu(props: menuProps) {
     const { playing, setPlaying, setGameType, setBet, setGuess } = props
 
-    const validateInput = (gameType: string, guess: string): boolean => {
+    const dispatch = useNotification()
+
+    const handleNewNotification = (
+        type: notifyType,
+        title: string,
+        message: string
+    ) => {
+        dispatch({
+            type,
+            message: message,
+            title: title,
+            position: "topR",
+        })
+    }
+
+    const validateInput = (
+        gameType: string,
+        guess: string,
+        value: string
+    ): boolean => {
         if (gameType === "") {
             return false
         }
-        if (parseInt(guess) < 0 || parseInt(guess) > 51) {
+        try {
+            if (parseInt(guess) < 0 || parseInt(guess) > 51) {
+                return false
+            }
+            if (parseFloat(value) < 0.001) {
+                return false
+            }
+        } catch {
             return false
         }
         return true
@@ -39,24 +66,25 @@ export default function Menu(props: menuProps) {
         const gameType: string = event.target[0].value
         const guess: string = event.target[1].value
         const value: string = event.target[2].value
-        if (!validateInput(gameType, guess)) {
-            // TODO: make notification
+        if (!validateInput(gameType, guess, value)) {
+            handleNewNotification(
+                "error",
+                "Incorrect Input",
+                "One of the fields entered in the form is incorrect. Please recheck."
+            )
             return
         }
         setPlaying(GameState.Playing)
         setBet(parseFloat(value))
         setGuess(parseInt(guess))
         setGameType(parseGameType(gameType))
+        handleNewNotification("success", "Game Started", "Please pick a card!")
     }
 
     return (
         <form onSubmit={handleSubmit}>
             <label>Choose a game:</label>
-            <select
-                name="games"
-                id="game-select"
-                disabled={playing != GameState.NotPlaying}
-            >
+            <select name="games" disabled={playing != GameState.NotPlaying}>
                 <option value="">--Please choose an option--</option>
                 <option value="blackOrRed"> Black Or Red </option>
                 <option value="suit"> Suit </option>

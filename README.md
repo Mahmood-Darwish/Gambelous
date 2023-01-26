@@ -43,6 +43,7 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Pico](https://img.shields.io/badge/Pico.CSS-gray.svg?style=for-the-badge)
+<img src="frontend/public/wagmi.jpg" width="50" height="31" alt="Wagmi">
 
 <a name="address"></a>
 
@@ -121,8 +122,6 @@ And finally, I need to make tests for the frontend.
 
 ## TODO
 
-- Add notifications
-- Add error handling
 - Make a better select based on game
 - Style the website
 - Fix staging test

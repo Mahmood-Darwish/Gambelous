@@ -5,6 +5,8 @@ import {
     useEnsAvatar,
     useEnsName,
 } from "wagmi"
+import { notifyType, useNotification } from "web3uikit"
+
 export default function Header() {
     const { address, connector, isConnected } = useAccount()
     const { data: ensAvatar } = useEnsAvatar({ address })
@@ -12,6 +14,20 @@ export default function Header() {
     const { connect, connectors, error, isLoading, pendingConnector } =
         useConnect()
     const { disconnect } = useDisconnect()
+    const dispatch = useNotification()
+
+    const handleNewNotification = (
+        type: notifyType,
+        title: string,
+        message: string
+    ) => {
+        dispatch({
+            type,
+            message: message,
+            title: title,
+            position: "topR",
+        })
+    }
 
     if (isConnected) {
         return (
@@ -20,7 +36,20 @@ export default function Header() {
                 <div>Connected to {connector?.name}</div>
                 <button
                     onClick={() => {
-                        disconnect()
+                        try {
+                            disconnect()
+                            handleNewNotification(
+                                "info",
+                                "Disconnected",
+                                `You're disconnected from ${connector?.name}!`
+                            )
+                        } catch (e) {
+                            handleNewNotification(
+                                "error",
+                                "Problem Disconnecting",
+                                `Unable to disconnect from ${connector?.name}! Error message: ${e}`
+                            )
+                        }
                     }}
                 >
                     Disconnect
@@ -35,7 +64,22 @@ export default function Header() {
                 <button
                     disabled={!connector.ready}
                     key={connector.id}
-                    onClick={() => connect({ connector })}
+                    onClick={() => {
+                        try {
+                            connect({ connector })
+                            handleNewNotification(
+                                "success",
+                                "New Connection",
+                                `You're connected to ${connector.name} now!`
+                            )
+                        } catch (e) {
+                            handleNewNotification(
+                                "error",
+                                "Problem Connecting",
+                                `Unable to connect to ${connector?.name}! Error message: ${e}`
+                            )
+                        }
+                    }}
                 >
                     {connector.name}
                     {!connector.ready && " (unsupported)"}
