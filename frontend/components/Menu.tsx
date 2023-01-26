@@ -89,9 +89,14 @@ export default function Menu(props: menuProps) {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
-        const gameType: string = event.target[0].value
-        const guess: string = parseGuess(event.target[1].value, gameType)
-        const value: string = event.target[2].value
+        const gameType: string = (event.currentTarget[0] as HTMLSelectElement)
+            .value
+        const guess: string = parseGuess(
+            (event.currentTarget[1] as HTMLSelectElement).value,
+            gameType
+        )
+        const value: string = (event.currentTarget[2] as HTMLInputElement).value
+        console.log(gameType, guess, value)
         if (!validateInput(gameType, guess, value)) {
             handleNewNotification(
                 "error",
@@ -128,7 +133,7 @@ export default function Menu(props: menuProps) {
                 disabled={playing != GameState.NotPlaying}
                 onChange={changeSelectOptionHandler}
             >
-                <option value="blackOrRed"> Black Or Red </option>
+                <option value="blackOrRed"> Black or Red </option>
                 <option value="suit"> Suit </option>
                 <option value="card"> Card </option>
             </select>
