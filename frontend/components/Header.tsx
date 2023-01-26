@@ -5,8 +5,6 @@ import {
     useEnsAvatar,
     useEnsName,
 } from "wagmi"
-import useIsSSR from "@/hooks/useIsSSR"
-
 export default function Header() {
     const { address, connector, isConnected } = useAccount()
     const { data: ensAvatar } = useEnsAvatar({ address })
@@ -14,8 +12,6 @@ export default function Header() {
     const { connect, connectors, error, isLoading, pendingConnector } =
         useConnect()
     const { disconnect } = useDisconnect()
-
-    let ssr = useIsSSR()
 
     if (isConnected) {
         return (
@@ -37,12 +33,12 @@ export default function Header() {
         <div>
             {connectors.map((connector) => (
                 <button
-                    disabled={!ssr && !connector.ready}
+                    disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => connect({ connector })}
                 >
                     {connector.name}
-                    {!ssr && !connector.ready && " (unsupported)"}
+                    {!connector.ready && " (unsupported)"}
                     {isLoading &&
                         connector.id === pendingConnector?.id &&
                         " (connecting)"}

@@ -29,12 +29,43 @@ interface contractAddressesInterface {
     [key: string]: string[]
 }
 
+const initializeState = (key: string, defaultValue: any) => {
+    if (
+        sessionStorage.getItem(key) !== null &&
+        sessionStorage.getItem(key) !== ""
+    ) {
+        return JSON.parse(sessionStorage.getItem(key) as string)
+    }
+    sessionStorage.setItem(key, JSON.stringify(defaultValue))
+    return defaultValue
+}
+
 export default function Table(props: tableProps) {
+    const defaultArray = [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
+        38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+    ]
     const { playing, setPlaying, gameType, bet, guess } = props
-    const [playingCards, setPlayingCards] =
-        useState<Array<[number, StaticImageData]>>(cards)
-    const [indexChosen, setIndexChosen] = useState<number>(-1)
-    const [gameId, setGameId] = useState<string>("")
+    const [playingCards, setPlayingCards] = useState<Array<number>>(
+        initializeState("playingCardsState", defaultArray)
+    )
+    const [gameId, setGameId] = useState<string>(
+        initializeState("gameIdState", "0x")
+    )
+
+    useEffect(() => {
+        setGameId(initializeState("gameIdState", ""))
+        setPlayingCards(initializeState("playingCardsState", defaultArray))
+    }, [])
+
+    useEffect(() => {
+        window.sessionStorage.setItem("gameIdState", JSON.stringify(gameId))
+        window.sessionStorage.setItem(
+            "playingCardsState",
+            JSON.stringify(playingCards)
+        )
+    }, [gameId, playingCards])
 
     const addresses: contractAddressesInterface = contractAddresses
     const { chain, chains } = useNetwork()
@@ -61,42 +92,27 @@ export default function Table(props: tableProps) {
                 console.log(requestId)
             }
             console.log(
-                typeof player,
-                requestId?.toString(),
-                typeof (await signer?.getAddress())
+                requestId?.toString()
             )
         },
     })
-
-    const shuffle = (deck: number[]) => {
-        const temp: Array<[number, StaticImageData]> = []
-        for (let i = 0; i < deck.length; i++) {
-            for (let j = 0; j < deck.length; j++) {
-                if (playingCards[j][0] == deck[i]) {
-                    temp.push(playingCards[j])
-                    break
-                }
-            }
-        }
-        setPlayingCards(temp)
-    }
 
     useContractEvent({
         address: gameAddress,
         abi: abi,
         eventName: "GameResult",
         async listener(requestId, result, deck) {
-            if (requestId?.toString() == gameId) {
-                shuffle(deck as number[])
-                setGameId("")
+            if (requestId?.toString() == gameId.toString()) {
+                setGameId("0x")
+                setPlayingCards(deck as number[])
                 setPlaying(GameState.NotPlaying)
             }
-            console.log(requestId?.toString(), gameId)
+            console.log(requestId?.toString(), gameId.toString())
             console.log(result)
         },
     })
 
-    const playGame = async () => {
+    const playGame = async (indexChosen: number) => {
         console.log(game)
         console.log(gameAddress)
         setPlaying(GameState.Loading)
@@ -105,19 +121,13 @@ export default function Table(props: tableProps) {
         })
     }
 
-    useEffect(() => {
-        if (indexChosen != -1) {
-            playGame()
-        }
-    }, [indexChosen])
-
     return (
         <div className="card-table">
-            {playingCards.map((card, index) => {
+            {playingCards.map((cardIndex, index) => {
                 return (
                     <button
                         onClick={async () => {
-                            setIndexChosen(index)
+                            playGame(index)
                         }}
                         disabled={playing != GameState.Playing}
                         id={index.toString()}
@@ -126,7 +136,7 @@ export default function Table(props: tableProps) {
                             isFlipped={playing != GameState.NotPlaying}
                             flipDirection="horizontal"
                         >
-                            <img src={card[1].src} height="130px" />
+                            <img src={cards[cardIndex].src} height="130px" />
 
                             <img src={back.src} height="130px" />
                         </ReactCardFlip>

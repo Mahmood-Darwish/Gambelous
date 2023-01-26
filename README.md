@@ -121,14 +121,13 @@ And finally, I need to make tests for the frontend.
 
 ## TODO
 
+- Add notifications
+- Add error handling
+- Make a better select based on game
+- Style the website
 - Fix staging test
 - Improve readme.md
-- Add how to play page
-- Add notifications
-- Style the website
-- Add error handling
 - Add tests for frontend
-- Show gas calculation for the reward
 
 <a name="contrib"></a>
 
