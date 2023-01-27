@@ -50,7 +50,7 @@ import img48 from "./cards/48.png"
 import img49 from "./cards/49.png"
 import img50 from "./cards/50.png"
 import img51 from "./cards/51.png"
-import back from "./cards/back.png"
+import back from "./cards/rsz_back.png"
 import { StaticImageData } from "next/image"
 
 export { back as back};

@@ -151,8 +151,27 @@ export default function Menu(props: menuProps) {
                 disabled={playing != GameState.NotPlaying}
                 required
             />
-            <button type="submit" disabled={playing != GameState.NotPlaying}>
+            <button
+                style={{ marginLeft: "5px", marginRight: "5px" }}
+                type="submit"
+                disabled={playing != GameState.NotPlaying}
+            >
                 Start Game
+            </button>
+            <button
+                style={{ marginLeft: "5px", marginRight: "5px" }}
+                disabled={playing != GameState.Playing}
+                onClick={(event) => {
+                    event.preventDefault()
+                    setPlaying(GameState.NotPlaying)
+                    handleNewNotification(
+                        "info",
+                        "Game Cancelled",
+                        "You've cancelled the game!"
+                    )
+                }}
+            >
+                Cancel Game
             </button>
         </form>
     )

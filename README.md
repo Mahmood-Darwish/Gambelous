@@ -123,6 +123,10 @@ And finally, I need to make tests for the frontend.
 ## TODO
 
 - Style the website
+- Add logo
+- Add proper name for website
+- Show chosen card
+- Check contract for vulnerabilities
 - Fix staging test
 - Improve readme.md
 - Add tests for frontend

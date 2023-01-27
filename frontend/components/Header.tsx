@@ -32,8 +32,13 @@ export default function Header() {
     if (isConnected) {
         return (
             <div>
-                <div>{ensName ? `${ensName} (${address})` : address}</div>
-                <div>Connected to {connector?.name}</div>
+                <h4 style={{ margin: "1px" }}>
+                    {ensName && `ENS Name: ${ensName}`}
+                </h4>
+                <h5 style={{ margin: "1px" }}>{`Address: ${address}`}</h5>
+                <h6 style={{ margin: "1px" }}>
+                    {connector?.name && `Connected to ${connector?.name}`}
+                </h6>
                 <button
                     onClick={() => {
                         try {
@@ -59,9 +64,10 @@ export default function Header() {
     }
 
     return (
-        <div>
+        <div className="grid">
             {connectors.map((connector) => (
                 <button
+                    style={{ marginLeft: "5px", marginRight: "5px" }}
                     disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => {

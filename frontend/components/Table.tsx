@@ -167,15 +167,15 @@ export default function Table(props: tableProps) {
     }
 
     return (
-        <div className="card-table">
+        <div className="grid">
             {playingCards.map((cardIndex, index) => {
                 return (
                     <button
-                        onClick={async () => {
+                        onClick={async (event) => {
                             playGame(index)
                         }}
                         disabled={playing != GameState.Playing}
-                        id={index.toString()}
+                        id={"image-button"}
                     >
                         <ReactCardFlip
                             isFlipped={playing != GameState.NotPlaying}
