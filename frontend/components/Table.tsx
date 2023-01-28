@@ -1,19 +1,9 @@
 import ReactCardFlip from "react-card-flip"
-import { cards, back } from "../public/index"
+import { cards, back, defaultArray } from "../public/index"
 import { GameType, GameState } from "@/pages"
 import { useEffect, useState } from "react"
 import { abi, contractAddresses } from "../constants"
-import {
-    useAccount,
-    useConnect,
-    useContract,
-    useContractEvent,
-    useContractRead,
-    useDisconnect,
-    useNetwork,
-    useProvider,
-    useSigner,
-} from "wagmi"
+import { useContract, useContractEvent, useNetwork, useSigner } from "wagmi"
 import { utils } from "ethers"
 import { notifyType, useNotification } from "web3uikit"
 
@@ -43,11 +33,6 @@ const initializeState = (key: string, defaultValue: any) => {
 }
 
 export default function Table(props: tableProps) {
-    const defaultArray = [
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-        20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
-        38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-    ]
     const {
         playing,
         setPlaying,
@@ -93,14 +78,14 @@ export default function Table(props: tableProps) {
     }
 
     const addresses: contractAddressesInterface = contractAddresses
-    const { chain, chains } = useNetwork()
-    const chainId = chain?.id != undefined ? chain.id.toString() : ""
+    const { chain } = useNetwork()
+    const chainId = chain?.id !== undefined ? chain.id.toString() : ""
     const gameAddress =
         chainId in addresses
             ? (addresses[chainId][0] as `0x${string}`)
             : ("0x" as `0x${string}`)
 
-    const { data: signer, isError, isLoading } = useSigner()
+    const { data: signer } = useSigner()
     const game = useContract({
         address: gameAddress,
         abi: abi,
@@ -112,7 +97,7 @@ export default function Table(props: tableProps) {
         abi: abi,
         eventName: "GameId",
         async listener(player, requestId) {
-            if (player?.toString() == (await signer?.getAddress())) {
+            if (player?.toString() === (await signer?.getAddress())) {
                 setGameId(requestId as string)
                 handleNewNotification(
                     "info",
@@ -130,7 +115,7 @@ export default function Table(props: tableProps) {
         abi: abi,
         eventName: "GameResult",
         async listener(requestId, result, deck) {
-            if (requestId?.toString() == gameId.toString()) {
+            if (requestId?.toString() === gameId.toString()) {
                 handleNewNotification(
                     (result as boolean) ? "success" : "error",
                     (result as boolean) ? "You've won" : "You've lost",
@@ -160,7 +145,7 @@ export default function Table(props: tableProps) {
                         "error",
                         "Can't start game",
                         `Error message: ${
-                            e.code == "ACTION_REJECTED"
+                            e.code === "ACTION_REJECTED"
                                 ? "user rejected transaction."
                                 : e
                         }`
@@ -182,20 +167,20 @@ export default function Table(props: tableProps) {
             {playingCards.map((cardIndex, index) => {
                 return (
                     <button
-                        onClick={async (event) => {
+                        onClick={async () => {
                             setChosenCardIndex(index)
                             playGame(index)
                         }}
-                        disabled={playing != GameState.Playing}
+                        disabled={playing !== GameState.Playing}
                         id={"image-button"}
                     >
                         <ReactCardFlip
-                            isFlipped={playing != GameState.NotPlaying}
+                            isFlipped={playing !== GameState.NotPlaying}
                             flipDirection="horizontal"
                         >
                             <img
                                 className={
-                                    chosenCardIndex == index
+                                    chosenCardIndex === index
                                         ? "chosen-card"
                                         : ""
                                 }
@@ -205,7 +190,7 @@ export default function Table(props: tableProps) {
 
                             <img
                                 className={
-                                    chosenCardIndex == index
+                                    chosenCardIndex === index
                                         ? "chosen-card"
                                         : ""
                                 }

@@ -78,17 +78,17 @@ export default function Menu(props: menuProps) {
             }
             return "13"
         }
-        if (gameType == "suit") {
-            if (guess == "Hearts") {
+        if (gameType === "suit") {
+            if (guess === "Hearts") {
                 return "0"
             }
-            if (guess == "Spades") {
+            if (guess === "Spades") {
                 return "13"
             }
-            if (guess == "Dimonds") {
+            if (guess === "Dimonds") {
                 return "26"
             }
-            if (guess == "Clubs") {
+            if (guess === "Clubs") {
                 return "39"
             }
         }
@@ -138,7 +138,7 @@ export default function Menu(props: menuProps) {
         <form onSubmit={handleSubmit} style={{ paddingLeft: "1.0rem" }}>
             <label>Choose a game:</label>
             <select
-                disabled={playing != GameState.NotPlaying}
+                disabled={playing !== GameState.NotPlaying}
                 onChange={changeSelectOptionHandler}
             >
                 <option value="blackOrRed"> Black or Red </option>
@@ -146,7 +146,7 @@ export default function Menu(props: menuProps) {
                 <option value="card"> Card </option>
             </select>
             <label>Enter your guess:</label>
-            <select disabled={playing != GameState.NotPlaying}>
+            <select disabled={playing !== GameState.NotPlaying}>
                 {options}
             </select>
             <label>
@@ -156,19 +156,19 @@ export default function Menu(props: menuProps) {
                 type="text"
                 placeholder="0.001 ETH"
                 pattern="\d*(\.\d+)?"
-                disabled={playing != GameState.NotPlaying}
+                disabled={playing !== GameState.NotPlaying}
                 required
             />
             <button
                 style={{ marginLeft: "5px", marginRight: "5px" }}
                 type="submit"
-                disabled={playing != GameState.NotPlaying}
+                disabled={playing !== GameState.NotPlaying}
             >
                 Start Game
             </button>
             <button
                 style={{ marginLeft: "5px", marginRight: "5px" }}
-                disabled={playing != GameState.Playing}
+                disabled={playing !== GameState.Playing}
                 onClick={(event) => {
                     event.preventDefault()
                     setPlaying(GameState.NotPlaying)
