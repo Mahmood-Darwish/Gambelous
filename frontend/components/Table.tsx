@@ -1,11 +1,12 @@
 import ReactCardFlip from "react-card-flip"
 import { cards, back, defaultArray } from "../public/index"
 import { GameType, GameState } from "@/pages"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { abi, contractAddresses } from "../constants"
 import { useContract, useContractEvent, useNetwork, useSigner } from "wagmi"
 import { utils } from "ethers"
 import { notifyType, useNotification } from "web3uikit"
+import { useSessionStorage } from "@/hooks/useSessionStorage"
 
 interface tableProps {
     playing: GameState
@@ -21,17 +22,6 @@ interface contractAddressesInterface {
     [key: string]: string[]
 }
 
-const initializeState = (key: string, defaultValue: any) => {
-    if (
-        sessionStorage.getItem(key) !== null &&
-        sessionStorage.getItem(key) !== ""
-    ) {
-        return JSON.parse(sessionStorage.getItem(key) as string)
-    }
-    sessionStorage.setItem(key, JSON.stringify(defaultValue))
-    return defaultValue
-}
-
 export default function Table(props: tableProps) {
     const {
         playing,
@@ -42,25 +32,14 @@ export default function Table(props: tableProps) {
         chosenCardIndex,
         setChosenCardIndex,
     } = props
-    const [playingCards, setPlayingCards] = useState<Array<number>>(
-        initializeState("playingCardsState", defaultArray)
+    const [playingCards, setPlayingCards] = useSessionStorage<Array<number>>(
+        "Gambelous_playingCardsState",
+        defaultArray
     )
-    const [gameId, setGameId] = useState<string>(
-        initializeState("gameIdState", "0x")
+    const [gameId, setGameId] = useSessionStorage<string>(
+        "Gambelous_gameIdState",
+        "0x"
     )
-
-    useEffect(() => {
-        setGameId(initializeState("gameIdState", ""))
-        setPlayingCards(initializeState("playingCardsState", defaultArray))
-    }, [])
-
-    useEffect(() => {
-        window.sessionStorage.setItem("gameIdState", JSON.stringify(gameId))
-        window.sessionStorage.setItem(
-            "playingCardsState",
-            JSON.stringify(playingCards)
-        )
-    }, [gameId, playingCards])
 
     const dispatch = useNotification()
 
@@ -98,7 +77,7 @@ export default function Table(props: tableProps) {
         eventName: "GameId",
         async listener(player, requestId) {
             if (player?.toString() === (await signer?.getAddress())) {
-                setGameId(requestId as string)
+                setGameId(requestId?.toString())
                 handleNewNotification(
                     "info",
                     "Game ID Received",
@@ -128,7 +107,12 @@ export default function Table(props: tableProps) {
                 setPlaying(GameState.NotPlaying)
                 return
             }
-            console.log(requestId?.toString(), result?.toString())
+            console.log(
+                requestId?.toString(),
+                result?.toString(),
+                gameId.toString()
+            )
+            console.log(requestId?.toString() === gameId.toString())
         },
     })
 
@@ -164,7 +148,7 @@ export default function Table(props: tableProps) {
 
     return (
         <div className="grid">
-            {playingCards.map((cardIndex, index) => {
+            {playingCards.map((cardIndex: string | number, index: number) => {
                 return (
                     <button
                         onClick={async () => {
@@ -184,7 +168,7 @@ export default function Table(props: tableProps) {
                                         ? "chosen-card"
                                         : ""
                                 }
-                                src={cards[cardIndex].src}
+                                src={cards[cardIndex as number].src}
                                 height="140px"
                             />
 

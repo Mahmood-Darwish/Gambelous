@@ -1,11 +1,12 @@
 import Head from "next/head"
 import { Inter } from "@next/font/google"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import Header from "../components/Header"
 import Menu from "../components/Menu"
 import Table from "../components/Table"
 import { useAccount, useConnect, useDisconnect, useNetwork } from "wagmi"
 import { InjectedConnector } from "wagmi/connectors/injected"
+import { useSessionStorage } from "@/hooks/useSessionStorage"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,56 +25,24 @@ export enum GameState {
     Loading,
 }
 
-const initializeState = (key: string, defaultValue: any) => {
-    if (
-        sessionStorage.getItem(key) !== null &&
-        sessionStorage.getItem(key) !== ""
-    ) {
-        return JSON.parse(sessionStorage.getItem(key) as string)
-    }
-    sessionStorage.setItem(key, JSON.stringify(defaultValue))
-    return defaultValue
-}
-
 export default function Home() {
-    const [playing, setPlaying] = useState<GameState>(
-        parseInt(initializeState("playingState", GameState.NotPlaying))
+    const [playing, setPlaying] = useSessionStorage<GameState>(
+        "Gambelous_playingState",
+        GameState.NotPlaying
     )
-    const [gameType, setGameType] = useState<GameType>(
-        parseInt(initializeState("gameTypeState", GameType.None))
+    const [gameType, setGameType] = useSessionStorage<GameType>(
+        "Gambelous_gameTypeState",
+        GameType.None
     )
-    const [bet, setBet] = useState<number>(
-        parseInt(initializeState("betState", 0))
+    const [bet, setBet] = useSessionStorage<number>("Gambelous_betState", 0)
+    const [guess, setGuess] = useSessionStorage<number>(
+        "Gambelous_guessState",
+        0
     )
-    const [guess, setGuess] = useState<number>(
-        parseInt(initializeState("guessState", 0))
+    const [chosenCardIndex, setChosenCardIndex] = useSessionStorage<number>(
+        "Gambelous_chosenCardIndexState",
+        -1
     )
-    const [chosenCardIndex, setChosenCardIndex] = useState<number>(
-        parseInt(initializeState("chosenCardIndexState", -1))
-    )
-
-    useEffect(() => {
-        setPlaying(
-            parseInt(initializeState("playingState", GameState.NotPlaying))
-        )
-        setGameType(parseInt(initializeState("gameTypeState", GameType.None)))
-        setBet(parseInt(initializeState("betState", 0)))
-        setGuess(parseInt(initializeState("guessState", 0)))
-        setChosenCardIndex(
-            parseInt(initializeState("chosenCardIndexState", -1))
-        )
-    }, [])
-
-    useEffect(() => {
-        window.sessionStorage.setItem("playingState", JSON.stringify(playing))
-        window.sessionStorage.setItem("gameTypeState", JSON.stringify(gameType))
-        window.sessionStorage.setItem("betState", JSON.stringify(bet))
-        window.sessionStorage.setItem("guessState", JSON.stringify(guess))
-        window.sessionStorage.setItem(
-            "chosenCardIndexState",
-            JSON.stringify(chosenCardIndex)
-        )
-    }, [playing, gameType, bet, guess, chosenCardIndex])
 
     const { address, isConnected } = useAccount()
     const { connect } = useConnect({
