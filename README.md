@@ -134,7 +134,7 @@ And finally, I need to make tests for the frontend.
 
 ## Contributing
 
-1. Fork it (<https://github.com/Mahmood-Darwish/gambling-game/fork>)
+1. Fork it (<https://github.com/Mahmood-Darwish/Gambelous/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
