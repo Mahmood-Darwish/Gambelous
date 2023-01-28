@@ -79,9 +79,9 @@ export default function Home() {
     return (
         <div>
             <Head>
-                <title>Gambling Game</title>
+                <title>Gambelous</title>
                 <meta
-                    name="Gambling Game"
+                    name="Gambelous"
                     content="Smart contract gambling game"
                 />
                 <link rel="icon" href="/icon.png" />

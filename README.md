@@ -1,4 +1,4 @@
-# Gambling Game
+# Gambelous
 
 [![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=plastic)](./LICENSE.md)
 

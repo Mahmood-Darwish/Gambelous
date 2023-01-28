@@ -123,7 +123,7 @@ export default function Table(props: tableProps) {
                 )
                 return
             }
-            console.log(player.toString(), requestId.toString())
+            console.log(player as string, requestId as string)
         },
     })
 
@@ -145,7 +145,7 @@ export default function Table(props: tableProps) {
                 setPlaying(GameState.NotPlaying)
                 return
             }
-            console.log(requestId.toString(), result.toString())
+            console.log(requestId as string, result as string)
         },
     })
 
