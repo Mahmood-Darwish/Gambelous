@@ -10,3 +10,16 @@
 .chosen-card {
     border: 2px solid red !important;
 }
+
+.header {
+    display: flex;
+    margin-left: 1rem;
+}
+
+.logo {
+    margin-left: auto;
+    display: flex;
+    margin-right: 2rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}

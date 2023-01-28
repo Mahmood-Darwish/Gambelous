@@ -88,7 +88,7 @@ export default function Table(props: tableProps) {
             type,
             message: message,
             title: title,
-            position: "topR",
+            position: "bottomR",
         })
     }
 
@@ -204,9 +204,9 @@ export default function Table(props: tableProps) {
                             isFlipped={playing != GameState.NotPlaying}
                             flipDirection="horizontal"
                         >
-                            <img src={cards[cardIndex].src} height="130px" />
+                            <img src={cards[cardIndex].src} height="140px" />
 
-                            <img src={back.src} height="130px" />
+                            <img src={back.src} height="140px" />
                         </ReactCardFlip>
                     </button>
                 )

@@ -52,8 +52,10 @@ import img50 from "./cards/50.png"
 import img51 from "./cards/51.png"
 import back from "./cards/rsz_back.png"
 import { StaticImageData } from "next/image"
+import icon from "./icon.png"
 
 export { back as back};
+export {icon as icon}
 
 export const cards: Array<StaticImageData> = [
     img0,

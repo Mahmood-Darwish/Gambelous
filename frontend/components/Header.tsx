@@ -6,6 +6,7 @@ import {
     useEnsName,
 } from "wagmi"
 import { notifyType, useNotification } from "web3uikit"
+import { icon } from "../public/index"
 
 export default function Header() {
     const { address, connector, isConnected } = useAccount()
@@ -25,46 +26,54 @@ export default function Header() {
             type,
             message: message,
             title: title,
-            position: "topR",
+            position: "bottomR",
         })
     }
 
     if (isConnected) {
         return (
-            <div>
-                <h4 style={{ margin: "1px" }}>
-                    {ensName && `ENS Name: ${ensName}`}
-                </h4>
-                <h5 style={{ margin: "1px" }}>{`Address: ${address}`}</h5>
-                <h6 style={{ margin: "1px" }}>
-                    {connector?.name && `Connected to ${connector?.name}`}
-                </h6>
-                <button
-                    onClick={() => {
-                        try {
-                            disconnect()
-                            handleNewNotification(
-                                "info",
-                                "Disconnected",
-                                `You're disconnected from ${connector?.name}!`
-                            )
-                        } catch (e) {
-                            handleNewNotification(
-                                "error",
-                                "Problem Disconnecting",
-                                `Unable to disconnect from ${connector?.name}! Error message: ${e}`
-                            )
-                        }
-                    }}
-                >
-                    Disconnect
-                </button>
+            <div className="header">
+                <div>
+                    <h4 style={{ margin: "1px" }}>
+                        {ensName && `ENS Name: ${ensName}`}
+                    </h4>
+                    <h5 style={{ margin: "1px" }}>{`Address: ${address}`}</h5>
+                    <h6 style={{ margin: "1px" }}>
+                        {connector?.name && `Connected to ${connector?.name}`}
+                    </h6>
+                    <button
+                        onClick={() => {
+                            try {
+                                disconnect()
+                                handleNewNotification(
+                                    "info",
+                                    "Disconnected",
+                                    `You're disconnected from ${connector?.name}!`
+                                )
+                            } catch (e) {
+                                handleNewNotification(
+                                    "error",
+                                    "Problem Disconnecting",
+                                    `Unable to disconnect from ${connector?.name}! Error message: ${e}`
+                                )
+                            }
+                        }}
+                    >
+                        Disconnect
+                    </button>
+                </div>
+                <div className="logo">
+                    <h1 style={{ marginRight: "1.0rem", marginTop: "1.0rem" }}>
+                        Gambelous
+                    </h1>
+                    <img src={icon.src} alt="Gambelous" height="100px" />
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="grid">
+        <div style={{ display: "flex" }}>
             {connectors.map((connector) => (
                 <button
                     style={{ marginLeft: "5px", marginRight: "5px" }}
@@ -94,8 +103,12 @@ export default function Header() {
                         " (connecting)"}
                 </button>
             ))}
-
-            {error && <div>{error.message}</div>}
+            <div className="logo">
+                <h1 style={{ marginRight: "1.0rem", marginTop: "1.0rem" }}>
+                    Gambelous
+                </h1>
+                <img src={icon.src} alt="Gambelous" height="100px" />
+            </div>
         </div>
     )
 }

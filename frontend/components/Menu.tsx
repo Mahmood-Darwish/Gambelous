@@ -39,7 +39,7 @@ export default function Menu(props: menuProps) {
             type,
             message: message,
             title: title,
-            position: "topR",
+            position: "bottomR",
         })
     }
 
@@ -148,7 +148,7 @@ export default function Menu(props: menuProps) {
     const options = type?.map((el) => <option key={el}>{el}</option>)
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{ paddingLeft: "1.0rem" }}>
             <label>Choose a game:</label>
             <select
                 disabled={playing != GameState.NotPlaying}

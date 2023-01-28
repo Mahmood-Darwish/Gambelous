@@ -80,10 +80,7 @@ export default function Home() {
         <div>
             <Head>
                 <title>Gambelous</title>
-                <meta
-                    name="Gambelous"
-                    content="Smart contract gambling game"
-                />
+                <meta name="Gambelous" content="Smart contract gambling game" />
                 <link rel="icon" href="/icon.png" />
             </Head>
             <Header />
@@ -115,11 +112,13 @@ export default function Home() {
                             />
                         </div>
                     ) : (
-                        <div>{`Please switch to a supported chainId. The supported Chain Ids are: ${supportedChains}`}</div>
+                        <div
+                            style={{ marginLeft: "1.0rem" }}
+                        >{`Please switch to a supported chainId. The supported Chain Ids are: ${supportedChains}`}</div>
                     )}
                 </div>
             ) : (
-                <div>
+                <div style={{ marginLeft: "1.0rem" }}>
                     <p>Please connect to a Wallet</p>
                 </div>
             )}
