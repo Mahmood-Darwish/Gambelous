@@ -9,10 +9,7 @@ interface menuProps {
     setGameType: Function
     setBet: Function
     setGuess: Function
-    chosenCardFront: null | HTMLImageElement
-    chosenCardBack: null | HTMLImageElement
-    setChosenCardFront: Function
-    setChosenCardBack: Function
+    setChosenCardIndex: Function
 }
 
 export default function Menu(props: menuProps) {
@@ -22,10 +19,7 @@ export default function Menu(props: menuProps) {
         setGameType,
         setBet,
         setGuess,
-        chosenCardFront,
-        chosenCardBack,
-        setChosenCardFront,
-        setChosenCardBack,
+        setChosenCardIndex,
     } = props
 
     const dispatch = useNotification()
@@ -78,8 +72,8 @@ export default function Menu(props: menuProps) {
     }
 
     const parseGuess = (guess: string, gameType: string): string => {
-        if (gameType == "blackOrRed") {
-            if (guess == "Red") {
+        if (gameType === "blackOrRed") {
+            if (guess === "Red") {
                 return "0"
             }
             return "13"
@@ -103,14 +97,7 @@ export default function Menu(props: menuProps) {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
-        if (chosenCardFront != null) {
-            chosenCardFront.classList.remove("chosen-card")
-        }
-        if (chosenCardBack != null) {
-            chosenCardBack.classList.remove("chosen-card")
-        }
-        setChosenCardFront(null)
-        setChosenCardBack(null)
+        setChosenCardIndex(-1)
         const gameType: string = (event.currentTarget[0] as HTMLSelectElement)
             .value
         const guess: string = parseGuess(

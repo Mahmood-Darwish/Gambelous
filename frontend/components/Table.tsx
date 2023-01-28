@@ -23,8 +23,8 @@ interface tableProps {
     gameType: GameType
     bet: number
     guess: number
-    setChosenCardFront: Function
-    setChosenCardBack: Function
+    chosenCardIndex: number
+    setChosenCardIndex: Function
 }
 
 interface contractAddressesInterface {
@@ -54,8 +54,8 @@ export default function Table(props: tableProps) {
         gameType,
         bet,
         guess,
-        setChosenCardFront,
-        setChosenCardBack,
+        chosenCardIndex,
+        setChosenCardIndex,
     } = props
     const [playingCards, setPlayingCards] = useState<Array<number>>(
         initializeState("playingCardsState", defaultArray)
@@ -117,13 +117,11 @@ export default function Table(props: tableProps) {
                 handleNewNotification(
                     "info",
                     "Game ID Received",
-                    `The game has been received by the smart contract. Your game ID is ${
-                        requestId as string
-                    }.`
+                    `The game has been received by the smart contract. Your game ID is ${requestId?.toString()}.`
                 )
                 return
             }
-            console.log(player as string, requestId as string)
+            console.log(player?.toString(), requestId?.toString())
         },
     })
 
@@ -145,7 +143,7 @@ export default function Table(props: tableProps) {
                 setPlaying(GameState.NotPlaying)
                 return
             }
-            console.log(requestId as string, result as string)
+            console.log(requestId?.toString(), result?.toString())
         },
     })
 
@@ -185,16 +183,7 @@ export default function Table(props: tableProps) {
                 return (
                     <button
                         onClick={async (event) => {
-                            const frontCard =
-                                event.currentTarget.children[0].children[0]
-                                    .children[0].children[0]
-                            const backCard =
-                                event.currentTarget.children[0].children[0]
-                                    .children[1].children[0]
-                            setChosenCardFront(frontCard)
-                            setChosenCardBack(backCard)
-                            frontCard.classList.add("chosen-card")
-                            backCard.classList.add("chosen-card")
+                            setChosenCardIndex(index)
                             playGame(index)
                         }}
                         disabled={playing != GameState.Playing}
@@ -204,9 +193,25 @@ export default function Table(props: tableProps) {
                             isFlipped={playing != GameState.NotPlaying}
                             flipDirection="horizontal"
                         >
-                            <img src={cards[cardIndex].src} height="140px" />
+                            <img
+                                className={
+                                    chosenCardIndex == index
+                                        ? "chosen-card"
+                                        : ""
+                                }
+                                src={cards[cardIndex].src}
+                                height="140px"
+                            />
 
-                            <img src={back.src} height="140px" />
+                            <img
+                                className={
+                                    chosenCardIndex == index
+                                        ? "chosen-card"
+                                        : ""
+                                }
+                                src={back.src}
+                                height="140px"
+                            />
                         </ReactCardFlip>
                     </button>
                 )

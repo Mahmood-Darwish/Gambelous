@@ -122,9 +122,6 @@ And finally, I need to make tests for the frontend.
 
 ## TODO
 
-- Make shown chosen card not disapper on refresh
-- Add logo
-- Add proper name for website
 - Check contract for vulnerabilities
 - Fix staging test
 - Improve readme.md

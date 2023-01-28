@@ -48,10 +48,9 @@ export default function Home() {
     const [guess, setGuess] = useState<number>(
         parseInt(initializeState("guessState", 0))
     )
-    const [chosenCardBack, setChosenCardBack] =
-        useState<HTMLImageElement | null>(null)
-    const [chosenCardFront, setChosenCardFront] =
-        useState<HTMLImageElement | null>(null)
+    const [chosenCardIndex, setChosenCardIndex] = useState<number>(
+        parseInt(initializeState("chosenCardIndexState", -1))
+    )
 
     useEffect(() => {
         setPlaying(
@@ -60,6 +59,9 @@ export default function Home() {
         setGameType(parseInt(initializeState("gameTypeState", GameType.None)))
         setBet(parseInt(initializeState("betState", 0)))
         setGuess(parseInt(initializeState("guessState", 0)))
+        setChosenCardIndex(
+            parseInt(initializeState("chosenCardIndexState", -1))
+        )
     }, [])
 
     useEffect(() => {
@@ -67,7 +69,11 @@ export default function Home() {
         window.sessionStorage.setItem("gameTypeState", JSON.stringify(gameType))
         window.sessionStorage.setItem("betState", JSON.stringify(bet))
         window.sessionStorage.setItem("guessState", JSON.stringify(guess))
-    }, [playing, gameType, bet, guess])
+        window.sessionStorage.setItem(
+            "chosenCardIndexState",
+            JSON.stringify(chosenCardIndex)
+        )
+    }, [playing, gameType, bet, guess, chosenCardIndex])
 
     const { address, isConnected } = useAccount()
     const { connect } = useConnect({
@@ -96,8 +102,8 @@ export default function Home() {
                                 gameType={gameType}
                                 bet={bet}
                                 guess={guess}
-                                setChosenCardFront={setChosenCardFront}
-                                setChosenCardBack={setChosenCardBack}
+                                chosenCardIndex={chosenCardIndex}
+                                setChosenCardIndex={setChosenCardIndex}
                             />
                             <Menu
                                 playing={playing}
@@ -105,10 +111,7 @@ export default function Home() {
                                 setGameType={setGameType}
                                 setBet={setBet}
                                 setGuess={setGuess}
-                                chosenCardFront={chosenCardFront}
-                                chosenCardBack={chosenCardBack}
-                                setChosenCardFront={setChosenCardFront}
-                                setChosenCardBack={setChosenCardBack}
+                                setChosenCardIndex={setChosenCardIndex}
                             />
                         </div>
                     ) : (
