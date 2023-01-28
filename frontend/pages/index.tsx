@@ -48,6 +48,10 @@ export default function Home() {
     const [guess, setGuess] = useState<number>(
         parseInt(initializeState("guessState", 0))
     )
+    const [chosenCardBack, setChosenCardBack] =
+        useState<HTMLImageElement | null>(null)
+    const [chosenCardFront, setChosenCardFront] =
+        useState<HTMLImageElement | null>(null)
 
     useEffect(() => {
         setPlaying(
@@ -95,6 +99,8 @@ export default function Home() {
                                 gameType={gameType}
                                 bet={bet}
                                 guess={guess}
+                                setChosenCardFront={setChosenCardFront}
+                                setChosenCardBack={setChosenCardBack}
                             />
                             <Menu
                                 playing={playing}
@@ -102,6 +108,10 @@ export default function Home() {
                                 setGameType={setGameType}
                                 setBet={setBet}
                                 setGuess={setGuess}
+                                chosenCardFront={chosenCardFront}
+                                chosenCardBack={chosenCardBack}
+                                setChosenCardFront={setChosenCardFront}
+                                setChosenCardBack={setChosenCardBack}
                             />
                         </div>
                     ) : (

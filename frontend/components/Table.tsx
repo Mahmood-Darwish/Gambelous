@@ -2,7 +2,6 @@ import ReactCardFlip from "react-card-flip"
 import { cards, back } from "../public/index"
 import { GameType, GameState } from "@/pages"
 import { useEffect, useState } from "react"
-import { StaticImageData } from "next/image"
 import { abi, contractAddresses } from "../constants"
 import {
     useAccount,
@@ -24,6 +23,8 @@ interface tableProps {
     gameType: GameType
     bet: number
     guess: number
+    setChosenCardFront: Function
+    setChosenCardBack: Function
 }
 
 interface contractAddressesInterface {
@@ -47,7 +48,15 @@ export default function Table(props: tableProps) {
         20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37,
         38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
     ]
-    const { playing, setPlaying, gameType, bet, guess } = props
+    const {
+        playing,
+        setPlaying,
+        gameType,
+        bet,
+        guess,
+        setChosenCardFront,
+        setChosenCardBack,
+    } = props
     const [playingCards, setPlayingCards] = useState<Array<number>>(
         initializeState("playingCardsState", defaultArray)
     )
@@ -112,7 +121,9 @@ export default function Table(props: tableProps) {
                         requestId as string
                     }.`
                 )
+                return
             }
+            console.log(player.toString(), requestId.toString())
         },
     })
 
@@ -132,7 +143,9 @@ export default function Table(props: tableProps) {
                 setGameId("0x")
                 setPlayingCards(deck as number[])
                 setPlaying(GameState.NotPlaying)
+                return
             }
+            console.log(requestId.toString(), result.toString())
         },
     })
 
@@ -172,6 +185,16 @@ export default function Table(props: tableProps) {
                 return (
                     <button
                         onClick={async (event) => {
+                            const frontCard =
+                                event.currentTarget.children[0].children[0]
+                                    .children[0].children[0]
+                            const backCard =
+                                event.currentTarget.children[0].children[0]
+                                    .children[1].children[0]
+                            setChosenCardFront(frontCard)
+                            setChosenCardBack(backCard)
+                            frontCard.classList.add("chosen-card")
+                            backCard.classList.add("chosen-card")
                             playGame(index)
                         }}
                         disabled={playing != GameState.Playing}

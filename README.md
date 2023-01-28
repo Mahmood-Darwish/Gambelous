@@ -42,8 +42,8 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![Pico](https://img.shields.io/badge/Pico.CSS-gray.svg?style=for-the-badge)
 <img src="frontend/public/wagmi.jpg" width="50" height="31" alt="Wagmi">
+<img src="frontend/public/milligram.jpg" width="40" height="40" alt="Milligram">
 
 <a name="address"></a>
 
@@ -122,10 +122,9 @@ And finally, I need to make tests for the frontend.
 
 ## TODO
 
-- Style the website
+- Make shown chosen card not disapper on refresh
 - Add logo
 - Add proper name for website
-- Show chosen card
 - Check contract for vulnerabilities
 - Fix staging test
 - Improve readme.md

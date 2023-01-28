@@ -9,10 +9,24 @@ interface menuProps {
     setGameType: Function
     setBet: Function
     setGuess: Function
+    chosenCardFront: null | HTMLImageElement
+    chosenCardBack: null | HTMLImageElement
+    setChosenCardFront: Function
+    setChosenCardBack: Function
 }
 
 export default function Menu(props: menuProps) {
-    const { playing, setPlaying, setGameType, setBet, setGuess } = props
+    const {
+        playing,
+        setPlaying,
+        setGameType,
+        setBet,
+        setGuess,
+        chosenCardFront,
+        chosenCardBack,
+        setChosenCardFront,
+        setChosenCardBack,
+    } = props
 
     const dispatch = useNotification()
 
@@ -89,6 +103,14 @@ export default function Menu(props: menuProps) {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault()
+        if (chosenCardFront != null) {
+            chosenCardFront.classList.remove("chosen-card")
+        }
+        if (chosenCardBack != null) {
+            chosenCardBack.classList.remove("chosen-card")
+        }
+        setChosenCardFront(null)
+        setChosenCardBack(null)
         const gameType: string = (event.currentTarget[0] as HTMLSelectElement)
             .value
         const guess: string = parseGuess(
@@ -96,7 +118,6 @@ export default function Menu(props: menuProps) {
             gameType
         )
         const value: string = (event.currentTarget[2] as HTMLInputElement).value
-        console.log(gameType, guess, value)
         if (!validateInput(gameType, guess, value)) {
             handleNewNotification(
                 "error",
