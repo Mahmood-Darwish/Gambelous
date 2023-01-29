@@ -94,6 +94,13 @@ export default function Home() {
                     <p>Please connect to a Wallet</p>
                 </div>
             )}
+            <footer className="footer">
+                <a href="https://github.com/Mahmood-Darwish/Gambelous">
+                    {" "}
+                    GitHub{" "}
+                </a>{" "}
+                repo of the project.{" "}
+            </footer>
         </div>
     )
 }

@@ -23,3 +23,12 @@
     margin-bottom: 1rem;
     align-items: center;
 }
+
+.footer {
+    font-size: small;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}

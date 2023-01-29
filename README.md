@@ -122,8 +122,6 @@ And finally, I need to make tests for the frontend.
 
 ## TODO
 
-- Create a useSessionStorage hook
-- Check contract for vulnerabilities
 - Fix staging test
 - Improve readme.md
 - Add tests for frontend
