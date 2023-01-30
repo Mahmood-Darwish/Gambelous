@@ -88,7 +88,7 @@ Each directory has its own readme file which will explain the code and how to us
 
 <a name="cur"></a>
 
-## Current state of the project
+## Current State of The Project
 
 ![Current state](https://img.shields.io/badge/Finished-green.svg?style=for-the-badge)
 ![Current state](https://img.shields.io/badge/Responding%20to%20Issues%20on%20GitHub-green.svg?style=for-the-badge)
