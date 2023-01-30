@@ -1,5 +1,7 @@
 # Frontend
 
+Unlike the Solidity section. This readme file needs to be fleshed out. It is one of the tasks on the TODO list.
+
 ## Table of Contents
 
 1. [ Development Setup ](#setup)
@@ -38,4 +40,5 @@ yarn dev
 It will start the website at `localhost:3000`. You can use the website to interact with the contract deployed on Goerli.
 
 The UI is very minimal and intuitive.
+
 
