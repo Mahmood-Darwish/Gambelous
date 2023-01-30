@@ -13,15 +13,12 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
    2. [ Frontend ](#tech-frontend)
 2. [ Contract Address ](#address)
    1. [ Goerli ](#address-goerli)
-3. [ Development Setup ](#dev)
-   1. [Deploying the Contract](#dev-deploy)
-   2. [Testing the Contract](#dev-test)
-4. [ How to Use ](#howto)
-5. [ Development Setup and Code Explanation ](#setup)
-6. [ Current State of The Project ](#cur)
-7. [ TODO ](#todo)
-8. [ Contributing ](#contrib)
-9. [ Acknowledgments ](#ack)
+3. [ How to Use ](#howto)
+4. [ Development Setup and Code Explanation ](#setup)
+5. [ Current State of The Project ](#cur)
+6. [ TODO ](#todo)
+7. [ Contributing ](#contrib)
+8. [ Acknowledgments ](#ack)
 
 ---
 
