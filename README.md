@@ -13,12 +13,13 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
    2. [ Frontend ](#tech-frontend)
 2. [ Contract Address ](#address)
    1. [ Goerli ](#address-goerli)
-3. [ How to Use ](#howto)
-4. [ Development Setup and Code Explanation ](#setup)
-5. [ Current State of The Project ](#cur)
-6. [ TODO ](#todo)
-7. [ Contributing ](#contrib)
-8. [ Acknowledgments ](#ack)
+3. [ Frontend Domain ](#domain)
+4. [ How to Use ](#howto)
+5. [ Development Setup and Code Explanation ](#setup)
+6. [ Current State of The Project ](#cur)
+7. [ TODO ](#todo)
+8. [ Contributing ](#contrib)
+9. [ Acknowledgments ](#ack)
 
 ---
 
@@ -64,6 +65,14 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 
 ---
 
+<a name="domain"></a>
+
+## Frontend Domain
+
+[https://master--graceful-vacherin-c433a4.netlify.app/](https://master--graceful-vacherin-c433a4.netlify.app/)
+
+---
+
 <a name="howto"></a>
 
 ## How to Use
@@ -73,6 +82,8 @@ The contract is currently deployed on Goerli and you can use it in multiple ways
 First, you can write your own scripts to interact with contract. You only need to get the abi and the contract address on Goerli to do so. You can obtain both by either going to the [ Etherscan ](#address-goerli) link or from the `constants` folder in the frontend directory.
 
 Second, you can use the use the [ Etherscan ](#address-goerli) link and go to the contract tab and connect your wallet to manually call functions from the contract.
+
+Third, you can use the deployed website at [here](https://master--graceful-vacherin-c433a4.netlify.app/).
 
 Finally, you can run the frontend which will automatically connect with the contract on Goerli and then open `localhost:3000` to interact with the contract using the UI.
 
