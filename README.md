@@ -104,9 +104,9 @@ Currently, I'm going to fix bugs and problems in the project but I won't extend 
 ## TODO
 
 - Add documentation for the frontend
-- Fix staging test
-- Improve readme.md
 - Add tests for frontend
+- Improve readme file for the frontend
+- Fix staging test
 
 ---
 
