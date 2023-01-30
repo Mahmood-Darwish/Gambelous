@@ -17,7 +17,7 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
    1. [Deploying the Contract](#dev-deploy)
    2. [Testing the Contract](#dev-test)
 4. [ How to Use ](#howto)
-5. [ Development Setup and Code Explanation ](#dev)
+5. [ Development Setup and Code Explanation ](#setup)
 6. [ Current State of The Project ](#cur)
 7. [ TODO ](#todo)
 8. [ Contributing ](#contrib)
@@ -81,7 +81,7 @@ Finally, you can run the frontend which will automatically connect with the cont
 
 ---
 
-<a name="dev"></a>
+<a name="setup"></a>
 
 ## Development Setup and Code Explanation
 
