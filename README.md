@@ -11,15 +11,19 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 1. [ Tech Stack ](#tech)
    1. [ Backend ](#tech-backend)
    2. [ Frontend ](#tech-frontend)
-2. [ Contract address ](#address)
+2. [ Contract Address ](#address)
    1. [ Goerli ](#address-goerli)
-3. [ Development setup ](#dev)
-   1. [Deploying the contract](#dev-deploy)
-   2. [Testing the contract](#dev-test)
-4. [ Current state of the project ](#cur)
-5. [ TODO ](#todo)
-6. [ Contributing ](#contrib)
-7. [ Acknowledgments ](#ack)
+3. [ Development Setup ](#dev)
+   1. [Deploying the Contract](#dev-deploy)
+   2. [Testing the Contract](#dev-test)
+4. [ How to Use ](#howto)
+5. [ Development Setup and Code Explanation ](#dev)
+6. [ Current State of The Project ](#cur)
+7. [ TODO ](#todo)
+8. [ Contributing ](#contrib)
+9. [ Acknowledgments ](#ack)
+
+---
 
 <a name="tech"></a>
 
@@ -45,9 +49,11 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 <img src="frontend/public/wagmi.jpg" width="50" height="31" alt="Wagmi">
 <img src="frontend/public/milligram.jpg" width="40" height="40" alt="Milligram">
 
+---
+
 <a name="address"></a>
 
-## Contract address
+## Contract Address
 
 <a name="address-goerli"></a>
 
@@ -59,72 +65,53 @@ A smart contract that implements multiple games on the Ethereum blockchain plus 
 0xA710Af3d0833FB7018c9C2A3365C3A44e29FD816
 ```
 
+---
+
+<a name="howto"></a>
+
+## How to Use
+
+The contract is currently deployed on Goerli and you can use it in multiple ways.
+
+First, you can write your own scripts to interact with contract. You only need to get the abi and the contract address on Goerli to do so. You can obtain both by either going to the [ Etherscan ](#address-goerli) link or from the `constants` folder in the frontend directory.
+
+Second, you can use the use the [ Etherscan ](#address-goerli) link and go to the contract tab and connect your wallet to manually call functions from the contract.
+
+Finally, you can run the frontend which will automatically connect with the contract on Goerli and then open `localhost:3000` to interact with the contract using the UI.
+
+---
+
 <a name="dev"></a>
 
-## Development setup
+## Development Setup and Code Explanation
 
-To start developing on the smart contract just clone the repo then run:
+Each directory has its own readme file which will explain the code and how to use it.
 
-```
-cd "SmartContracts"
-yarn
-```
-
-It will install all the dependencies and you can start developing.
-
-Note: The contract currently is only setup to be used locally on hardhat or to be deployed and used on the Goerli testnet.
-
-<a name="dev-deploy"></a>
-
-### Deploying the contract
-
-#### Locally
-
-```
-yarn hardhat deploy
-```
-
-#### Goerli
-
-```
-yarn hardhat deploy --network goerli
-```
-
-<a name="dev-test"></a>
-
-### Testing the contract
-
-#### Locally
-
-```
-yarn hardhat test
-```
-
-#### Staging tests on Goerli
-
-```
-yarn hardhat test --network goerli
-```
+---
 
 <a name="cur"></a>
 
 ## Current state of the project
 
-![Current state](https://img.shields.io/badge/Under%20Active%20Development-green.svg?style=for-the-badge)
+![Current state](https://img.shields.io/badge/Finished-green.svg?style=for-the-badge)
+![Current state](https://img.shields.io/badge/Responding%20to%20Issues%20on%20GitHub-green.svg?style=for-the-badge)
 
-The smart contract is finished. The frontend still needs a lot of work.
+There is a TODO list in this readme file. In the future I might consider finishing it.
 
-Currently, the frontend is finished but it's not connected to smart contract. It also needs styling.
+Currently, I'm going to fix bugs and problems in the project but I won't extend or add features. Please if you find a problem, mention it on the issues page in the GitHub repo.
 
-And finally, I need to make tests for the frontend.
+---
 
 <a name="todo"></a>
 
 ## TODO
 
+- Add documentation for the frontend
 - Fix staging test
 - Improve readme.md
 - Add tests for frontend
+
+---
 
 <a name="contrib"></a>
 
@@ -137,6 +124,8 @@ And finally, I need to make tests for the frontend.
 5. Create a new Pull Request
 
 <a name="ack"></a>
+
+---
 
 ## Acknowledgments
 
